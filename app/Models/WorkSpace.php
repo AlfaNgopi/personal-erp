@@ -1,0 +1,92 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class WorkSpace extends Model
+{
+    use SoftDeletes;
+    protected $table = 'work_spaces';
+    protected $fillable = [
+        'name',
+        'base_currency',
+        'timezone',
+        'status'
+    ];
+
+    public function structure()
+    {
+        return [
+            'parent' => null,
+            'table' => 'work-spaces',
+            'title' => 'Work Space',
+            'table_has_actions' => true,
+            'table_has_timestamps' => true,
+
+            'columns' => [
+                [
+                    'name' => 'name',
+                    'type' => 'string',
+                    'validation' => 'required|string|max:255',
+                    'label' => 'Name',
+                    'required' => true,
+                    'inTable' => true,
+                    'inCreateForm' => true,
+                    'inEditForm' => true,
+                    'inShowPage' => true,
+                ],
+                [
+                    'name' => 'base_currency',
+                    'type' => 'string',
+                    'validation' => 'required|string|max:255',
+                    'label' => 'Base Currency',
+                    'required' => true,
+                    'inTable' => true,
+                    'inCreateForm' => true,
+                    'inEditForm' => true,
+                    'inShowPage' => true,
+                ],
+                [
+                    'name' => 'timezone',
+                    'type' => 'string',
+                    'validation' => 'required|string|max:255',
+                    'label' => 'Timezone',
+                    'required' => false,
+                    'inTable' => true,
+                    'inCreateForm' => true,
+                    'inEditForm' => true,
+                    'inShowPage' => true,
+                ],
+                [
+                    'name' => 'status',
+                    'type' => 'string',
+                    'validation' => 'required|string|max:255',
+                    'label' => 'Status',
+                    'required' => false,
+                    'inTable' => false,
+                    'inCreateForm' => true,
+                    'inEditForm' => true,
+                    'inShowPage' => true,
+                ],
+                
+            ]
+        ];
+    }
+
+    public function getValidationRules(): array
+    {
+        $structure = $this->structure();
+
+        $rules = [];
+
+        foreach ($structure['columns'] as $column) {
+            if (!empty($column['validation'])) {
+                $rules[$column['name']] = $column['validation'];
+            }
+        }
+
+        return $rules;
+    }
+}

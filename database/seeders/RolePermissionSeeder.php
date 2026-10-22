@@ -31,6 +31,22 @@ class RolePermissionSeeder extends Seeder
             'edit-permissions',
             'download-permissions',
             'delete-permissions',
+
+            //work-spaces permissions
+            'view-work-spaces',
+            'show-work-spaces',
+            'create-work-spaces',
+            'edit-work-spaces',
+            'download-work-spaces',
+            'delete-work-spaces',
+
+            //work-space-members permissions
+            'view-work-space-members',
+            'show-work-space-members',
+            'create-work-space-members',
+            'edit-work-space-members',
+            'download-work-space-members',
+            'delete-work-space-members'
         ];
 
         foreach ($permissions as $permissionName) {

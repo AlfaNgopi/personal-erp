@@ -88,17 +88,25 @@ return [
         ],
     ],
     [
-        'title' => 'Stok',
-        'icon' => 'fas-boxes-packing',
-        'route' => 'stoks.index',
-        'active' => 'stoks*',
-        'permission' => 'view-stoks',
-    ],
-    [
-        'title' => 'Laporan',
-        'icon' => 'fas-chart-line',
-        'route' => 'laporans.penjualan',
-        'active' => 'laporans*',
-        'permission' => 'view-laporanpenjualans',
+        'title' => 'Work Spaces Management',
+        'icon' => 'fas-building',
+        'active' => ['work-spaces*', 'work-space-members*'],
+        'permission' => ['view-work-spaces', 'view-work-space-members'],
+        'children' => [
+            [
+                'title' => 'Work Spaces',
+                'icon' => 'fas-building',
+                'route' => 'work-spaces.index',
+                'active' => 'work-spaces*',
+                'permission' => 'view-work-spaces',
+            ],
+            [
+                'title' => 'Work Space Members',
+                'icon' => 'fas-users',
+                'route' => 'work-space-members.index',
+                'active' => 'work-space-members*',
+                'permission' => 'view-work-space-members',
+            ],
+        ],
     ],
 ];

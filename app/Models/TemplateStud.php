@@ -16,7 +16,8 @@ class TemplateStud extends Model
         'description',
         'date',
         'number',
-        'enum'
+        'enum',
+        'foreign_id'
     ];
 
     public function structure()
@@ -76,17 +77,43 @@ class TemplateStud extends Model
                 [
                     'name' => 'enum',
                     'type' => 'enum',
-                    'validation' => 'required|in:option1,option2,option3',
+                    'validation' => 'nullable|in:option1,option2,option3',
                     'label' => 'Enum',
                     'required' => false,
                     'inTable' => true,
                     'inCreateForm' => true,
                     'inEditForm' => true,
                     'inShowPage' => true,
-                ]
+                ],
+                [
+                    'name' => 'foreign_id',
+                    'display_value' => 'foreigns.name',
+                    'type' => 'select',
+                    'validation' => 'required|exists:foreigns,id',
+                    'label' => 'Foreign',
+                    'options' => TemplateStud::all()->pluck('name', 'id')->toArray(),
+                    'required' => true,
+                    'inTable' => true,
+                    'inCreateForm' => true,
+                    'inEditForm' => true,
+                    'inShowPage' => true,
+                ],
             ]
         ];
     }
 
+    public function getValidationRules(): array
+    {
+        $structure = $this->structure();
 
+        $rules = [];
+
+        foreach ($structure['columns'] as $column) {
+            if (!empty($column['validation'])) {
+                $rules[$column['name']] = $column['validation'];
+            }
+        }
+
+        return $rules;
+    }
 }

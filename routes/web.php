@@ -4,6 +4,8 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Settings;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkSpacesController;
+use App\Http\Controllers\WorkSpaceMembersController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -56,6 +58,28 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit')->middleware('permission:edit-users');
     Route::put('users/{user}', [UserController::class, 'update'])->name('users.update')->middleware('permission:edit-users');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy')->middleware('permission:delete-users');
+
+    // Work Spaces Management - dengan permission check
+    Route::get('work-spaces', [WorkSpacesController::class, 'index'])->name('work-spaces.index')->middleware('permission:view-work-spaces');
+    Route::get('work-spaces/table', [WorkSpacesController::class, 'indexTable'])->name('work-spaces.indexTable')->middleware('permission:view-work-spaces');
+    Route::get('work-spaces/export', [WorkSpacesController::class, 'export'])->name('work-spaces.export')->middleware('permission:download-work-spaces');
+    Route::get('work-spaces/create', [WorkSpacesController::class, 'create'])->name('work-spaces.create')->middleware('permission:create-work-spaces');
+    Route::post('work-spaces', [WorkSpacesController::class, 'store'])->name('work-spaces.store')->middleware('permission:create-work-spaces');
+    Route::get('work-spaces/{workSpace}', [WorkSpacesController::class, 'show'])->name('work-spaces.show')->middleware('permission:show-work-spaces');
+    Route::get('work-spaces/{workSpace}/edit', [WorkSpacesController::class, 'edit'])->name('work-spaces.edit')->middleware('permission:edit-work-spaces');
+    Route::put('work-spaces/{workSpace}', [WorkSpacesController::class, 'update'])->name('work-spaces.update')->middleware('permission:edit-work-spaces');
+    Route::delete('work-spaces/{workSpace}', [WorkSpacesController::class, 'destroy'])->name('work-spaces.destroy')->middleware('permission:delete-work-spaces');
+
+    // Work Space Members Management - dengan permission check
+    Route::get('work-space-members', [WorkSpaceMembersController::class, 'index'])->name('work-space-members.index')->middleware('permission:view-work-space-members');
+    Route::get('work-space-members/table', [WorkSpaceMembersController::class, 'indexTable'])->name('work-space-members.table')->middleware('permission:view-work-space-members');
+    Route::get('work-space-members/export', [WorkSpaceMembersController::class, 'export'])->name('work-space-members.export')->middleware('permission:download-work-space-members');
+    Route::get('work-space-members/create', [WorkSpaceMembersController::class, 'create'])->name('work-space-members.create')->middleware('permission:create-work-space-members');
+    Route::post('work-space-members', [WorkSpaceMembersController::class, 'store'])->name('work-space-members.store')->middleware('permission:create-work-space-members');
+    Route::get('work-space-members/{workSpaceMember}', [WorkSpaceMembersController::class, 'show'])->name('work-space-members.show')->middleware('permission:show-work-space-members');
+    Route::get('work-space-members/{workSpaceMember}/edit', [WorkSpaceMembersController::class, 'edit'])->name('work-space-members.edit')->middleware('permission:edit-work-space-members');
+    Route::put('work-space-members/{workSpaceMember}', [WorkSpaceMembersController::class, 'update'])->name('work-space-members.update')->middleware('permission:edit-work-space-members');
+    Route::delete('work-space-members/{workSpaceMember}', [WorkSpaceMembersController::class, 'destroy'])->name('work-space-members.destroy')->middleware('permission:delete-work-space-members');
 });
 
 require __DIR__.'/auth.php';
