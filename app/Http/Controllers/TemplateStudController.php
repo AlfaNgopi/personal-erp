@@ -23,16 +23,16 @@ class TemplateStudController extends Controller
     public function index()
     {
         $structure = (new TemplateStud())->structure();
-        return view('dynamiccrud.index', compact('structure'));
+        return view('dynamiccrud.index', $structure);
     }
 
     public function indexTable(Request $request)
     {
         if (request()->ajax()) {
 
-            $vendors = TemplateStud::select('template_studs.*');
+            $templateStuds = TemplateStud::query();
             
-            return DataTables::of($vendors)
+            return DataTables::of($templateStuds)
                 ->addColumn('foreign_id', function ($templateStud) {
                     return $templateStud->foreign ? $templateStud->foreign->name : '';
                 })
@@ -75,7 +75,7 @@ class TemplateStudController extends Controller
     {
         $structure = (new TemplateStud())->structure();
         // dd($structure);
-        return view('dynamiccrud.create', compact('structure'));
+        return view('dynamiccrud.create', $structure);
     }
 
     public function store(Request $request)

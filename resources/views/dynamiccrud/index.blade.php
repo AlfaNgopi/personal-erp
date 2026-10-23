@@ -49,6 +49,7 @@
             <table id="dynamic-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-900">
                     <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
                         @foreach ($columns as $column)
                             @if ($column['inTable'] ?? false)
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __($column['label']) }}</th>
@@ -85,10 +86,15 @@
     <script>
         $(document).ready(function() {
             const columnscollect = JSON.parse($('#columns').val())
-            const columns = []
+            const columns = [
+                {
+                    'name' : 'id',
+                    'data' : 'id'
+                }
+            ]
 
             for (let c of columnscollect) {
-                if (c.inTable) columns.push({ data: c.name, name: c.name });
+                if (c.inTable) columns.push({ data: c.data, name: c.display_value });
             }
 
             if ($('#timestamps').val() == '1') {

@@ -28,6 +28,8 @@ class WorkSpace extends Model
             'columns' => [
                 [
                     'name' => 'name',
+                    'data' => 'name',
+                    'display_value' => 'name',
                     'type' => 'string',
                     'validation' => 'required|string|max:255',
                     'label' => 'Name',
@@ -39,6 +41,8 @@ class WorkSpace extends Model
                 ],
                 [
                     'name' => 'base_currency',
+                    'data' => 'base_currency',
+                    'display_value' => 'base_currency',
                     'type' => 'string',
                     'validation' => 'required|string|max:255',
                     'label' => 'Base Currency',
@@ -50,6 +54,8 @@ class WorkSpace extends Model
                 ],
                 [
                     'name' => 'timezone',
+                    'data' => 'timezone',
+                    'display_value' => 'timezone',
                     'type' => 'string',
                     'validation' => 'required|string|max:255',
                     'label' => 'Timezone',
@@ -61,6 +67,8 @@ class WorkSpace extends Model
                 ],
                 [
                     'name' => 'status',
+                    'data' => 'status',
+                    'display_value' => 'status',
                     'type' => 'string',
                     'validation' => 'required|string|max:255',
                     'label' => 'Status',
@@ -88,5 +96,10 @@ class WorkSpace extends Model
         }
 
         return $rules;
+    }
+
+    public function members()
+    {
+        return $this->hasMany(WorkSpaceMember::class);
     }
 }

@@ -20,7 +20,7 @@ class WorkSpaceMember extends Model
     {
         return [
             'parent' => 'work_spaces',
-            'table' => 'work_space_members',
+            'table' => 'work-space-members',
             'title' => 'Work Space Member',
             'table_has_actions' => true,
             'table_has_timestamps' => true,
@@ -28,6 +28,7 @@ class WorkSpaceMember extends Model
             'columns' => [
                 [
                     'name' => 'work_space_id',
+                    'data' => 'work_space.name',
                     'display_value' => 'work_spaces.name',
                     'type' => 'select',
                     'validation' => 'required|exists:work_spaces,id',
@@ -41,8 +42,9 @@ class WorkSpaceMember extends Model
                 ],
                 [
                     'name' => 'user_id',
-                    'type' => 'select',
+                    'data' => 'user.name',
                     'display_value' => 'users.name',
+                    'type' => 'select',
                     'validation' => 'required|exists:users,id',
                     'label' => 'User',
                     'options' => User::all()->pluck('name', 'id')->toArray(),
@@ -54,6 +56,8 @@ class WorkSpaceMember extends Model
                 ],
                 [
                     'name' => 'role',
+                    'data' => 'role',
+                    'display_value' => 'role',
                     'type' => 'string',
                     'validation' => 'required|string|max:255',
                     'label' => 'Role',
@@ -65,6 +69,8 @@ class WorkSpaceMember extends Model
                 ],
                 [
                     'name' => 'status',
+                    'data' => 'status',
+                    'display_value' => 'status',
                     'type' => 'string',
                     'validation' => 'required|string|max:255',
                     'label' => 'Status',
@@ -74,7 +80,7 @@ class WorkSpaceMember extends Model
                     'inEditForm' => true,
                     'inShowPage' => true,
                 ],
-                
+
             ]
         ];
     }
@@ -92,5 +98,18 @@ class WorkSpaceMember extends Model
         }
 
         return $rules;
+    }
+
+    public function workSpace()
+    {
+        return $this->belongsTo(WorkSpace::class);
+    }
+    public function work_spaces()
+    {
+        return $this->belongsTo(WorkSpace::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

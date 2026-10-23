@@ -72,7 +72,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Work Space Members Management - dengan permission check
     Route::get('work-space-members', [WorkSpaceMembersController::class, 'index'])->name('work-space-members.index')->middleware('permission:view-work-space-members');
-    Route::get('work-space-members/table', [WorkSpaceMembersController::class, 'indexTable'])->name('work-space-members.table')->middleware('permission:view-work-space-members');
+    Route::get('work-space-members/table', [WorkSpaceMembersController::class, 'indexTable'])->name('work-space-members.indexTable')->middleware('permission:view-work-space-members');
     Route::get('work-space-members/export', [WorkSpaceMembersController::class, 'export'])->name('work-space-members.export')->middleware('permission:download-work-space-members');
     Route::get('work-space-members/create', [WorkSpaceMembersController::class, 'create'])->name('work-space-members.create')->middleware('permission:create-work-space-members');
     Route::post('work-space-members', [WorkSpaceMembersController::class, 'store'])->name('work-space-members.store')->middleware('permission:create-work-space-members');

@@ -29,6 +29,7 @@ class WorkSpacesController extends Controller
             $vendors = WorkSpace::select('work_spaces.*');
             
             return DataTables::of($vendors)
+                ->addIndexColumn()
                 ->addColumn('foreign_id', function ($workSpace) {
                     return $workSpace->foreign ? $workSpace->foreign->name : '';
                 })
