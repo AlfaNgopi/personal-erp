@@ -1,20 +1,34 @@
 <x-layouts.app>
+    @php
+    $formColumns = collect($columns)->filter(fn($c) => $c['inCreateForm'] ?? false);
+    $hasFile = $formColumns->contains(fn($c) => in_array($c['type'], ['file', 'image']));
+    @endphp
+
+    {{-- Breadcrumb --}}
     <div class="mb-6 flex items-center text-sm">
         <a href="{{ route('dashboard') }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ __('Dashboard') }}</a>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        <a href="{{ route($tablename . '.index') }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $title ?? __('Produks') }}</a>
+        @if (!empty($parent))
+        <span class="text-gray-500 dark:text-gray-400">{{ $parent }}</span>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        <span class="text-gray-500 dark:text-gray-400">{{ $title ?? __('Create') }}</span>
+        @endif
+        <a href="{{ route($table . '.index') }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $title }}</a>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <span class="text-gray-500 dark:text-gray-400">{{ __('Create') }}</span>
     </div>
 
+    {{-- Header --}}
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Create {{ $title }}</h1>
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ __('Create') }} {{ $title }}</h1>
         <p class="text-gray-600 dark:text-gray-400 mt-1">{{ $subheading ?? __('Fill in the details below') }}</p>
     </div>
 
@@ -29,73 +43,100 @@
         </div>
         @endif
 
-
         <div class="p-6">
-            <form action="{{ route($tablename . '.store') }}" method="POST" class="max-w-2xl">
+            <form action="{{ route($table . '.store') }}" method="POST" class="max-w-2xl"
+                @if ($hasFile) enctype="multipart/form-data" @endif>
                 @csrf
-                @method('POST')
 
-                @foreach($columns as $column)
-                @if(!$column['inform'] )
-                @continue
-                @endif
-                
-                @if($column['type'] === 'text')
+                @foreach ($formColumns as $column)
+                @php
+                $name = $column['name'];
+                $label = __($column['label'] ?? ucfirst(str_replace('_', ' ', $name)));
+                $required = $column['required'] ?? false;
+                $type = $column['type'] ?? 'string';
+                @endphp
+
+                @switch($type)
+                @case('email')
                 <div class="mb-4">
-                    <x-forms.input label="{{ $column['title'] }}" name="{{ $column['name'] }}" type="text" value="{{ old($column['name']) }}" required />
+                    <x-forms.input :label="$label" :name="$name" type="email"
+                        :value="old($name)" :required="$required" />
                 </div>
+                @break
 
-                @elseif($column['type'] === 'email')
-                
+                @case('password')
                 <div class="mb-4">
-                    <x-forms.input label="{{ $column['title'] }}" name="{{ $column['name'] }}" type="email" value="{{ old($column['name']) }}" required />
+                    <x-forms.input :label="$label" :name="$name" type="password"
+                        :required="$required" />
                 </div>
-
-                @elseif($column['type'] === 'password')
-
                 <div class="mb-4">
-                    <x-forms.input label="Password" name="password" type="password" required />
+                    <x-forms.input :label="__('Confirm') . ' ' . $label" :name="$name . '_confirmation'"
+                        type="password" :required="$required" />
                 </div>
+                @break
 
-                <div class="mb-6">
-                    <x-forms.input label="Confirm Password" name="password_confirmation" type="password" required />
-                </div>
-
-                @elseif($column['type'] === 'number')
-
+                @case('number')
+                @case('integer')
+                @case('decimal')
                 <div class="mb-4">
-                    <x-forms.input label="{{ $column['title'] }}" name="{{ $column['name'] }}" type="number" step="0.01" value="{{ old($column['name']) }}" required />
+                    <x-forms.input :label="$label" :name="$name" type="number"
+                        step="{{ $type === 'integer' ? '1' : '0.01' }}"
+                        :value="old($name)" :required="$required" />
                 </div>
-                @elseif($column['type'] === 'select')
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        {{ $column['title'] }}
-                    </label>
+                @break
 
-                    <select
-                        name="{{ $column['name'] }}"
-                        class="block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm p-2">
-
-                        <option value="">{{ __('Select ' . $column['title']) }}</option>
-                        @foreach($column['options'] as $option)
-                        <option value="{{ $option['value'] }}" {{ old($column['name']) == $option['value'] ? 'selected' : '' }}>
-                            {{ $option['label'] }}
-                        </option>
-                        @endforeach
-                    </select>
-
-                    @error($column['name'])
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                    @enderror
+                @case('date')
+                <div class="mb-4">
+                    <x-forms.input :label="$label" :name="$name" type="date"
+                        :value="old($name)" :required="$required" />
                 </div>
-                @endif
+                @break
+
+                @case('textarea')
+                <div class="mb-4">
+                    <x-forms.textarea :label="$label" :name="$name"
+                        :value="old($name)" :required="$required" />
+                </div>
+                @break
+
+                @case('select')
+                <div class="mb-4">
+                    <x-forms.select :label="$label" :name="$name"
+                        :options="$column['options'] ?? []"
+                        :value="old($name)" :required="$required" />
+                </div>
+                @break
+
+                @case('file')
+                @case('image')
+                <div class="mb-4">
+                    <x-forms.file :label="$label" :name="$name"
+                        :accept="$type === 'image' ? 'image/*' : null"
+                        :required="$required" />
+                </div>
+                @break
+
+                @case('checkbox')
+                @case('boolean')
+                <div class="mb-4">
+                    <x-forms.checkbox :label="$label" :name="$name"
+                        :checked="old($name, false)" />
+                </div>
+                @break
+
+                @default
+                {{-- string / text --}}
+                <div class="mb-4">
+                    <x-forms.input :label="$label" :name="$name" type="text"
+                        :value="old($name)" :required="$required" />
+                </div>
+                @endswitch
                 @endforeach
 
-
-
-                <div class="flex gap-3">
+                <div class="flex gap-3 mt-6">
                     <x-button type="primary">{{ __('Create') }}</x-button>
-                    <a href="{{ route($tablename . '.index') }}" class="text-white font-medium py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors flex items-center justify-center cursor-pointer bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 dark:bg-gray-500 dark:hover:bg-gray-600">
+                    <a href="{{ route($table . '.index') }}"
+                        class="text-white font-medium py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors flex items-center justify-center cursor-pointer bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 dark:bg-gray-500 dark:hover:bg-gray-600">
                         {{ __('Batal') }}
                     </a>
                 </div>

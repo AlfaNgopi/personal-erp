@@ -68,11 +68,7 @@ class TemplateStudController extends Controller
     {
         $structure = $templateStud->structure();
         $data = $templateStud;
-        //fill value
-        foreach ($structure['columns'] as &$column) {
-            $column['value'] = $templateStud->{$column['name']};
-        }
-        return view('dynamiccrud.show', compact('structure', 'data'));
+        return view('dynamiccrud.show', array_merge($structure, ['data' => $data]));
     }
 
     public function create()
@@ -90,14 +86,14 @@ class TemplateStudController extends Controller
 
         $templateStud = TemplateStud::create($validatedData);
 
-        return redirect()->route('template-studs.show', $templateStud)->with('success', 'Template Stud created successfully.');
+        return redirect()->route('template-studs.index')->with('success', 'Template Stud created successfully.');
     }
 
     public function edit(TemplateStud $templateStud)
     {
         $structure = $templateStud->structure();
         $data = $templateStud;
-        return view('dynamiccrud.edit', compact('data', 'structure'));
+        return view('dynamiccrud.edit', array_merge($structure, ['data' => $data]));
     }
 
     public function update(Request $request, TemplateStud $templateStud)
@@ -108,7 +104,7 @@ class TemplateStudController extends Controller
 
         $templateStud->update($validatedData);
 
-        return redirect()->route('template-studs.show', $templateStud)->with('success', 'Template Stud updated successfully.');
+        return redirect()->route('template-studs.index')->with('success', 'Template Stud updated successfully.');
     }
 
     public function destroy(TemplateStud $templateStud)

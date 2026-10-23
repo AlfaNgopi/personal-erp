@@ -64,18 +64,15 @@ class WorkSpacesController extends Controller
     {
         $structure = $workSpace->structure();
         $data = $workSpace;
-        //fill value
-        foreach ($structure['columns'] as &$column) {
-            $column['value'] = $workSpace->{$column['name']};
-        }
-        return view('dynamiccrud.show', compact('structure', 'data'));
+        
+        return view('dynamiccrud.show', array_merge($structure, ['data' => $data]));
     }
 
     public function create()
     {
         $structure = (new WorkSpace())->structure();
         // dd($structure);
-        return view('dynamiccrud.create', compact('structure'));
+        return view('dynamiccrud.create', $structure);
     }
 
     public function store(Request $request)
@@ -86,14 +83,14 @@ class WorkSpacesController extends Controller
 
         $workSpace = WorkSpace::create($validatedData);
 
-        return redirect()->route('work-spaces.show', $workSpace)->with('success', 'Work Space created successfully.');
+        return redirect()->route('work-spaces.index')->with('success', 'Work Space created successfully.');
     }
 
     public function edit(WorkSpace $workSpace)
     {
         $structure = $workSpace->structure();
         $data = $workSpace;
-        return view('dynamiccrud.edit', compact('data', 'structure'));
+        return view('dynamiccrud.edit', array_merge($structure, ['data' => $data]));
     }
 
     public function update(Request $request, WorkSpace $workSpace)
@@ -104,7 +101,7 @@ class WorkSpacesController extends Controller
 
         $workSpace->update($validatedData);
 
-        return redirect()->route('work-spaces.show', $workSpace)->with('success', 'Work Space updated successfully.');
+        return redirect()->route('work-spaces.index')->with('success', 'Work Space updated successfully.');
     }
 
     public function destroy(WorkSpace $workSpace)

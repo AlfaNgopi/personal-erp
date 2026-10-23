@@ -73,40 +73,51 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
+    <!-- hidden variable for js -->
+     <input type="hidden" id="table" value="{{ $table }}">
+     <input type="hidden" id="title" value="{{ $title }}">
+     <input type="hidden" id="timestamps" value="{{ $table_has_timestamps ?? false }}">
+     <input type="hidden" id="actions" value="{{ $table_has_actions ?? false }}">
+     <input type="hidden" id="columns" value="{{ collect($columns) }}">
+
+
+    
     <script>
         $(document).ready(function() {
-            const columns = @json(
-                collect($columns)
-                    ->filter(fn($c) => $c['inTable'] ?? false)
-                    ->map(fn($c) => ['data' => $c['name'], 'name' => $c['name']])
-                    ->values()
-            );
+            const columnscollect = JSON.parse($('#columns').val())
+            const columns = []
 
-            @if ($table_has_timestamps ?? false)
+            for (let c of columnscollect) {
+                if (c.inTable) columns.push({ data: c.name, name: c.name });
+            }
+
+            if ($('#timestamps').val() == '1') {
                 columns.push({ data: 'created_at', name: 'created_at' });
-            @endif
+            }
 
-            @if ($table_has_actions ?? false)
+            if ($('#actions').val() == '1') {
                 columns.push({
-                    data: 'action',
-                    name: 'action',
+                    data: 'actions',
+                    name: 'actions',
                     orderable: false,
                     searchable: false,
                     className: 'text-right'
                 });
-            @endif
+            }
+
+            console.log(columns)
 
             $('#dynamic-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route($table . '.indexTable') }}',
+                ajax: "{{ route($table . '.indexTable') }}",
                 columns: columns,
                 order: [
                     [0, 'asc']
                 ],
                 language: {
                     search: "_INPUT_",
-                    searchPlaceholder: "Search " + @json($title),
+                    searchPlaceholder: "Search  {{ strtolower($title) }}",
                     lengthMenu: "Show _MENU_ entries",
                     info: "Showing _START_ to _END_ of _TOTAL_ {{ strtolower($title) }}",
                     infoEmpty: "No {{ strtolower($title) }} found",
