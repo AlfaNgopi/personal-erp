@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Finance\FinanceCategoryController;
+use App\Http\Controllers\Finance\FinanceMerchantController;
 use App\Http\Controllers\Finance\FinanceTransactionController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
@@ -94,9 +95,20 @@ Route::middleware(['auth'])->group(function () {
     Route::put('finance-categories/{financeCategory}', [FinanceCategoryController::class, 'update'])->name('finance-categories.update')->middleware('permission:edit-finance-categories');
     Route::delete('finance-categories/{financeCategory}', [FinanceCategoryController::class, 'destroy'])->name('finance-categories.destroy')->middleware('permission:delete-finance-categories');
 
+    Route::get('finance-merchants', [FinanceMerchantController::class, 'index'])->name('finance-merchants.index')->middleware('permission:view-finance-merchants');
+    Route::get('finance-merchants/table', [FinanceMerchantController::class, 'indexTable'])->name('finance-merchants.indexTable')->middleware('permission:view-finance-merchants');
+    Route::get('finance-merchants/export', [FinanceMerchantController::class, 'export'])->name('finance-merchants.export')->middleware('permission:download-finance-merchants');
+    Route::get('finance-merchants/create', [FinanceMerchantController::class, 'create'])->name('finance-merchants.create')->middleware('permission:create-finance-merchants');
+    Route::post('finance-merchants', [FinanceMerchantController::class, 'store'])->name('finance-merchants.store')->middleware('permission:create-finance-merchants');
+    Route::get('finance-merchants/{financeMerchant}', [FinanceMerchantController::class, 'show'])->name('finance-merchants.show')->middleware('permission:show-finance-merchants');
+    Route::get('finance-merchants/{financeMerchant}/edit', [FinanceMerchantController::class, 'edit'])->name('finance-merchants.edit')->middleware('permission:edit-finance-merchants');
+    Route::put('finance-merchants/{financeMerchant}', [FinanceMerchantController::class, 'update'])->name('finance-merchants.update')->middleware('permission:edit-finance-merchants');
+    Route::delete('finance-merchants/{financeMerchant}', [FinanceMerchantController::class, 'destroy'])->name('finance-merchants.destroy')->middleware('permission:delete-finance-merchants');
+
     Route::get('finance-transactions', [FinanceTransactionController::class, 'index'])->name('finance-transactions.index')->middleware('permission:view-finance-transactions');
     Route::get('finance-transactions/table', [FinanceTransactionController::class, 'indexTable'])->name('finance-transactions.indexTable')->middleware('permission:view-finance-transactions');
     Route::get('finance-transactions/export', [FinanceTransactionController::class, 'export'])->name('finance-transactions.export')->middleware('permission:download-finance-transactions');
+    Route::post('finance-transactions/import', [FinanceTransactionController::class, 'importPdf'])->name('finance-transactions.import')->middleware('permission:download-finance-transactions');
     Route::get('finance-transactions/create', [FinanceTransactionController::class, 'create'])->name('finance-transactions.create')->middleware('permission:create-finance-transactions');
     Route::post('finance-transactions', [FinanceTransactionController::class, 'store'])->name('finance-transactions.store')->middleware('permission:create-finance-transactions');
     Route::get('finance-transactions/{financeTransaction}', [FinanceTransactionController::class, 'show'])->name('finance-transactions.show')->middleware('permission:show-finance-transactions');

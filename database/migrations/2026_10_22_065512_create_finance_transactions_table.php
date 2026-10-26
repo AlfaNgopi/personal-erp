@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('finance_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('work_space_id')->constrained('work_spaces')->onDelete('cascade');
-            $table->foreignId('finance_category_id')->constrained('finance_categories');
+            $table->foreignId('finance_category_id')->nullable()->constrained('finance_categories');
             $table->integer('amount');
             $table->date('transaction_date');
             $table->text('description')->nullable();

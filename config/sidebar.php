@@ -123,6 +123,13 @@ return [
                 'permission' => 'view-finance-categories',
             ],
             [
+                'title' => 'Finance Merchants',
+                'icon' => 'fas-store',
+                'route' => 'finance-merchants.index',
+                'active' => 'finance-merchants*',
+                'permission' => 'view-finance-merchants',
+            ],
+            [
                 'title' => 'Finance Transaction',
                 'icon' => 'fas-money-bill',
                 'route' => 'finance-transactions.index',

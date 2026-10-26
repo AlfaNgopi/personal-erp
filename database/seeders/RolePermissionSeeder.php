@@ -55,6 +55,13 @@ class RolePermissionSeeder extends Seeder
             'download-finance-transactions',
             'show-finance-transactions',
 
+            'view-finance-merchants',
+            'show-finance-merchants',
+            'create-finance-merchants',
+            'edit-finance-merchants',
+            'delete-finance-merchants',
+            'download-finance-merchants',
+
             'view-finance-categories',
             'show-finance-categories',
             'create-finance-categories',

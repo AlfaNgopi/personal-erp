@@ -1,0 +1,266 @@
+<x-layouts.app>
+    {{-- Breadcrumb --}}
+    <div class="mb-6 flex items-center text-sm">
+        <a href="{{ route('dashboard') }}"
+            class="text-blue-600 dark:text-blue-400 hover:underline">{{ __('Dashboard') }}</a>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        @if (!empty($parent))
+        <span class="text-gray-500 dark:text-gray-400">{{ $parent }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        @endif
+        <span class="text-gray-500 dark:text-gray-400">{{ $title }}</span>
+    </div>
+
+    {{-- Header --}}
+    <div class="mb-6 flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ $title }}</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Manage System {{ $title }}</p>
+        </div>
+        <div class="flex gap-2">
+            @if (auth()->user()->hasPermission('download-' . $table) && ($canDownload ?? true) !== false)
+            <a href="{{ route($table . '.export') }}">
+                <x-button type="secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    {{ __('Download Excel') }}
+                </x-button>
+            </a>
+            @endif
+
+            <button type="button" id="open-pdf-upload" class="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                {{ __('Import PDF') }}
+            </button>
+
+            <div id="pdf-upload-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50" role="dialog" aria-modal="true" aria-labelledby="pdf-upload-title">
+                <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h2 id="pdf-upload-title" class="text-lg font-semibold text-gray-800 dark:text-gray-100">{{ __('Import PDF') }}</h2>
+                        <button type="button" id="close-pdf-upload" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" aria-label="{{ __('Close') }}">&times;</button>
+                    </div>
+                    <form action="{{ route($table . '.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <label for="pdf-file" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Select a PDF file') }}</label>
+                        <input id="pdf-file" name="pdf" type="file" accept="application/pdf,.pdf" required class="mb-6 block w-full text-sm text-gray-700 dark:text-gray-300">
+                        <div class="flex justify-end gap-2">
+                            <button type="button" id="cancel-pdf-upload" class="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">{{ __('Cancel') }}</button>
+                            <button type="submit" class="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">{{ __('Upload PDF') }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <script>
+                (() => {
+                    const modal = document.getElementById('pdf-upload-modal');
+                    const closeModal = () => {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                    };
+
+                    document.getElementById('open-pdf-upload').addEventListener('click', () => {
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                    });
+                    document.getElementById('close-pdf-upload').addEventListener('click', closeModal);
+                    document.getElementById('cancel-pdf-upload').addEventListener('click', closeModal);
+                    modal.addEventListener('click', event => {
+                        if (event.target === modal) closeModal();
+                    });
+                    document.addEventListener('keydown', event => {
+                        if (event.key === 'Escape') closeModal();
+                    });
+                })();
+            </script>
+
+            @if (auth()->user()->hasPermission('create-' . $table) && ($canCreate ?? true) !== false)
+            <a href="{{ route($table . '.create') }}">
+                <x-button type="primary">{{ __('Create ' . $title) }}</x-button>
+            </a>
+            @endif
+        </div>
+    </div>
+
+    {{-- Table --}}
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-4">
+            <table id="dynamic-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-900">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
+                        @foreach ($columns as $column)
+                        @if ($column['inTable'] ?? false)
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __($column['label']) }}</th>
+                        @endif
+                        @endforeach
+
+                        @if ($table_has_timestamps ?? false)
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Created At') }}</th>
+                        @endif
+
+                        @if ($table_has_actions ?? false)
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Actions') }}</th>
+                        @endif
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.tailwindcss.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+    <!-- hidden variable for js -->
+    <input type="hidden" id="table" value="{{ $table }}">
+    <input type="hidden" id="title" value="{{ $title }}">
+    <input type="hidden" id="timestamps" value="{{ $table_has_timestamps ?? false }}">
+    <input type="hidden" id="actions" value="{{ $table_has_actions ?? false }}">
+    <input type="hidden" id="columns" value="{{ collect($columns) }}">
+
+
+
+    <script>
+        $(document).ready(function() {
+            const columnscollect = JSON.parse($('#columns').val())
+            const columns = [{
+                'name': 'id',
+                'data': 'id'
+            }]
+
+            for (let c of columnscollect) {
+                if (c.inTable) columns.push({
+                    data: c.data,
+                    name: c.display_value
+                });
+            }
+
+            if ($('#timestamps').val() == '1') {
+                columns.push({
+                    data: 'created_at',
+                    name: 'created_at'
+                });
+            }
+
+            if ($('#actions').val() == '1') {
+                columns.push({
+                    data: 'actions',
+                    name: 'actions',
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-right'
+                });
+            }
+
+            console.log(columns)
+
+            $('#dynamic-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route($table . '.indexTable') }}",
+                columns: columns,
+                order: [
+                    [0, 'asc']
+                ],
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search  {{ strtolower($title) }}",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ {{ strtolower($title) }}",
+                    infoEmpty: "No {{ strtolower($title) }} found",
+                    infoFiltered: "(filtered from _MAX_ total {{ strtolower($title) }})",
+                    zeroRecords: "No matching {{ strtolower($title) }} found",
+                    emptyTable: "No {{ strtolower($title) }} available"
+                },
+                dom: '<"flex flex-col md:flex-row justify-between items-center mb-4"lf>rt<"flex flex-col md:flex-row justify-between items-center mt-4"ip>',
+                pageLength: 10,
+                lengthMenu: [
+                    [10, 25, 50, 100],
+                    [10, 25, 50, 100]
+                ],
+                stripeClasses: ['bg-white dark:bg-gray-800', 'bg-gray-50 dark:bg-gray-900']
+            });
+        });
+    </script>
+
+    <style>
+        #dynamic-table {
+            border-collapse: separate !important;
+            border-spacing: 0;
+        }
+
+        #dynamic-table thead th {
+            border-bottom: 2px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+        }
+
+        .dark #dynamic-table thead th {
+            border-bottom-color: #374151;
+            border-right-color: #374151;
+            background-color: #1f2937;
+        }
+
+        #dynamic-table thead th:last-child {
+            border-right: none;
+        }
+
+        #dynamic-table tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .dark #dynamic-table tbody tr {
+            border-bottom-color: #374151;
+        }
+
+        #dynamic-table tbody tr.odd {
+            background-color: #ffffff;
+        }
+
+        #dynamic-table tbody tr.even {
+            background-color: #f9fafb;
+        }
+
+        .dark #dynamic-table tbody tr.odd {
+            background-color: #1f2937;
+        }
+
+        .dark #dynamic-table tbody tr.even {
+            background-color: #111827;
+        }
+
+        #dynamic-table tbody tr:hover {
+            background-color: #e5e7eb !important;
+        }
+
+        .dark #dynamic-table tbody tr:hover {
+            background-color: #374151 !important;
+        }
+
+        #dynamic-table tbody td {
+            border-right: 1px solid #e5e7eb;
+            padding: 12px 24px;
+        }
+
+        .dark #dynamic-table tbody td {
+            border-right-color: #374151;
+        }
+
+        #dynamic-table tbody td:last-child {
+            border-right: none;
+        }
+
+        #dynamic-table tbody td a,
+        #dynamic-table tbody td form {
+            display: inline;
+            white-space: nowrap;
+        }
+    </style>
+</x-layouts.app>

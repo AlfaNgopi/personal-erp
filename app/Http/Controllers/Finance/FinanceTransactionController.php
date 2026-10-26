@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
+use App\Http\Service\PdfParserService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Finance\FinanceTransaction;
@@ -21,7 +22,7 @@ class FinanceTransactionController extends Controller
     public function index()
     {
         $structure = (new FinanceTransaction())->structure();
-        return view('dynamiccrud.index', $structure);
+        return view('financetransaction.index', $structure);
     }
 
     public function indexTable(Request $request)
@@ -61,6 +62,15 @@ class FinanceTransactionController extends Controller
                 ->rawColumns(['actions',])
                 ->make(true);
         }
+    }
+
+    public function importPdf(Request $request)
+    {
+       
+
+        $path = $request->file('pdf')->getRealPath();
+        $text = (new PdfParserService())->extract($path);
+        dd($text);
     }
 
     public function show(FinanceTransaction $financeTransaction)
