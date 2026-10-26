@@ -2,6 +2,7 @@
 
 namespace App\Models\Finance;
 
+use App\Models\WorkSpace;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -10,6 +11,7 @@ class FinanceMerchant extends Model
     use SoftDeletes;
     protected $table = 'finance_merchants';
     protected $fillable = [
+        'work_space_id',
         'name',
         'default_category_id',
     ];
@@ -24,6 +26,20 @@ class FinanceMerchant extends Model
             'table_has_timestamps' => true,
 
             'columns' => [
+                [
+                    'name' => 'work_space_id',
+                    'data' => 'work_space.name',
+                    'display_value' => 'work_spaces.name',
+                    'type' => 'string',
+                    'validation' => 'required|exists:work_spaces,id',
+                    'label' => 'Work Space',
+                    'options' => WorkSpace::all()->pluck('name', 'id')->toArray(),
+                    'required' => true,
+                    'inTable' => true,
+                    'inCreateForm' => true,
+                    'inEditForm' => true,
+                    'inShowPage' => true,
+                ],
                 [
                     'name' => 'name',
                     'data' => 'name',
@@ -54,6 +70,11 @@ class FinanceMerchant extends Model
                 ],
             ]
         ];
+    }
+
+    public function defaultCategory()
+    {
+        return $this->belongsTo(FinanceCategory::class, 'default_category_id');
     }
 
     public function getValidationRules(): array

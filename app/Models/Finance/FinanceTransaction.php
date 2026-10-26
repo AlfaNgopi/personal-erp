@@ -15,6 +15,7 @@ class FinanceTransaction extends Model
 
     protected $fillable = [
         'work_space_id',
+        'finance_merchant_id',
         'finance_category_id',
         'amount',
         'transaction_date',
@@ -38,10 +39,25 @@ class FinanceTransaction extends Model
             'columns' => [
                 [
                     'name' => 'work_space_id',
-                    'type' => 'select',
+                    'data' => 'work_space.name',
                     'display_value' => 'work_spaces.name',
+                    'type' => 'select',
                     'validation' => 'required|exists:work_spaces,id',
                     'label' => 'Work Space',
+                    'required' => true,
+                    'inTable' => true,
+                    'inCreateForm' => true,
+                    'inEditForm' => true,
+                    'inShowPage' => true,
+                ],
+                [
+                    'name' => 'finance_merchant_id',
+                    'data' => 'finance_merchant.name',
+                    'display_value' => 'finance_merchants.name',
+                    'type' => 'select',
+                    'validation' => 'required|exists:finance_merchants,id',
+                    'label' => 'Merchant',
+                    'options' => FinanceMerchant::all()->pluck('name', 'id')->toArray(),
                     'required' => true,
                     'inTable' => true,
                     'inCreateForm' => true,
@@ -51,6 +67,8 @@ class FinanceTransaction extends Model
                 
                 [
                     'name' => 'transaction_date',
+                    'data' => 'transaction_date',
+                    'display_value' => 'transaction_date',
                     'type' => 'date',
                     'validation' => 'required|date',
                     'label' => 'Date',
@@ -62,6 +80,8 @@ class FinanceTransaction extends Model
                 ],
                 [
                     'name' => 'amount',
+                    'data' => 'amount',
+                    'display_value' => 'amount',
                     'type' => 'number',
                     'validation' => 'required|integer|min:0',
                     'label' => 'Amount',
@@ -73,6 +93,7 @@ class FinanceTransaction extends Model
                 ],
                 [
                     'name' => 'finance_category_id',
+                    'data' => 'finance_category.name',
                     'display_value' => 'finance_categories.name',
                     'type' => 'select',
                     'validation' => 'required|exists:finance_categories,id',
@@ -86,6 +107,8 @@ class FinanceTransaction extends Model
                 ],
                 [
                     'name' => 'description',
+                    'data' => 'description',
+                    'display_value' => 'description',
                     'type' => 'text',
                     'validation' => 'required|string',
                     'label' => 'Description',
@@ -97,6 +120,33 @@ class FinanceTransaction extends Model
                 ],
             ]
         ];
+    }
+
+    public function workspace()
+    {
+        return $this->belongsTo(WorkSpace::class, 'work_space_id');
+    }
+    public function work_space()
+    {
+        return $this->belongsTo(WorkSpace::class, 'work_space_id');
+    }
+
+    public function financeCategory()
+    {
+        return $this->belongsTo(FinanceCategory::class, 'finance_category_id');
+    }
+    public function finance_category()
+    {
+        return $this->belongsTo(FinanceCategory::class, 'finance_category_id');
+    }
+
+    public function financeMerchant()
+    {
+        return $this->belongsTo(FinanceMerchant::class, 'finance_merchant_id');
+    }
+    public function finance_merchant()
+    {
+        return $this->belongsTo(FinanceMerchant::class, 'finance_merchant_id');
     }
 
     public function getValidationRules(): array

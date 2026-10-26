@@ -89,12 +89,13 @@
             const columns = [
                 {
                     'name' : 'id',
-                    'data' : 'id'
+                    'data' : 'id',
+                    defaultContent: '-'
                 }
             ]
 
             for (let c of columnscollect) {
-                if (c.inTable) columns.push({ data: c.data, name: c.display_value });
+                if (c.inTable) columns.push({ data: c.data, name: c.display_value, defaultContent: '-' });
             }
 
             if ($('#timestamps').val() == '1') {

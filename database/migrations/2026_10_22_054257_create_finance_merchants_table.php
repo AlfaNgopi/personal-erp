@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('finance_merchants', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('work_space_id')->constrained('work_spaces')->onDelete('cascade');
             $table->string('name');
             $table->foreignId('default_category_id')->nullable()->constrained('finance_categories');
             $table->timestamps();
