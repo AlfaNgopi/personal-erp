@@ -46,7 +46,21 @@ class RolePermissionSeeder extends Seeder
             'create-work-space-members',
             'edit-work-space-members',
             'download-work-space-members',
-            'delete-work-space-members'
+            'delete-work-space-members',
+
+            'view-finance-transactions',
+            'create-finance-transactions',
+            'edit-finance-transactions',
+            'delete-finance-transactions',
+            'download-finance-transactions',
+            'show-finance-transactions',
+
+            'view-finance-categories',
+            'show-finance-categories',
+            'create-finance-categories',
+            'edit-finance-categories',
+            'delete-finance-categories',
+            'download-finance-categories'
         ];
 
         foreach ($permissions as $permissionName) {

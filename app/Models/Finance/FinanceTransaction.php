@@ -30,7 +30,7 @@ class FinanceTransaction extends Model
     {
         return [
             'parent' => 'finance',
-            'table' => 'finance_transactions',
+            'table' => 'finance-transactions',
             'title' => 'Finance Transaction',
             'table_has_actions' => true,
             'table_has_timestamps' => true,

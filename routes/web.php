@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Finance\FinanceCategoryController;
+use App\Http\Controllers\Finance\FinanceTransactionController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Settings;
@@ -80,6 +82,27 @@ Route::middleware(['auth'])->group(function () {
     Route::get('work-space-members/{workSpaceMember}/edit', [WorkSpaceMembersController::class, 'edit'])->name('work-space-members.edit')->middleware('permission:edit-work-space-members');
     Route::put('work-space-members/{workSpaceMember}', [WorkSpaceMembersController::class, 'update'])->name('work-space-members.update')->middleware('permission:edit-work-space-members');
     Route::delete('work-space-members/{workSpaceMember}', [WorkSpaceMembersController::class, 'destroy'])->name('work-space-members.destroy')->middleware('permission:delete-work-space-members');
+
+    // Finance Management
+    Route::get('finance-categories', [FinanceCategoryController::class, 'index'])->name('finance-categories.index')->middleware('permission:view-finance-categories');
+    Route::get('finance-categories/table', [FinanceCategoryController::class, 'indexTable'])->name('finance-categories.indexTable')->middleware('permission:view-finance-categories');
+    Route::get('finance-categories/export', [FinanceCategoryController::class, 'export'])->name('finance-categories.export')->middleware('permission:download-finance-categories');
+    Route::get('finance-categories/create', [FinanceCategoryController::class, 'create'])->name('finance-categories.create')->middleware('permission:create-finance-categories');
+    Route::post('finance-categories', [FinanceCategoryController::class, 'store'])->name('finance-categories.store')->middleware('permission:create-finance-categories');
+    Route::get('finance-categories/{financeCategory}', [FinanceCategoryController::class, 'show'])->name('finance-categories.show')->middleware('permission:show-finance-categories');
+    Route::get('finance-categories/{financeCategory}/edit', [FinanceCategoryController::class, 'edit'])->name('finance-categories.edit')->middleware('permission:edit-finance-categories');
+    Route::put('finance-categories/{financeCategory}', [FinanceCategoryController::class, 'update'])->name('finance-categories.update')->middleware('permission:edit-finance-categories');
+    Route::delete('finance-categories/{financeCategory}', [FinanceCategoryController::class, 'destroy'])->name('finance-categories.destroy')->middleware('permission:delete-finance-categories');
+
+    Route::get('finance-transactions', [FinanceTransactionController::class, 'index'])->name('finance-transactions.index')->middleware('permission:view-finance-transactions');
+    Route::get('finance-transactions/table', [FinanceTransactionController::class, 'indexTable'])->name('finance-transactions.indexTable')->middleware('permission:view-finance-transactions');
+    Route::get('finance-transactions/export', [FinanceTransactionController::class, 'export'])->name('finance-transactions.export')->middleware('permission:download-finance-transactions');
+    Route::get('finance-transactions/create', [FinanceTransactionController::class, 'create'])->name('finance-transactions.create')->middleware('permission:create-finance-transactions');
+    Route::post('finance-transactions', [FinanceTransactionController::class, 'store'])->name('finance-transactions.store')->middleware('permission:create-finance-transactions');
+    Route::get('finance-transactions/{financeTransaction}', [FinanceTransactionController::class, 'show'])->name('finance-transactions.show')->middleware('permission:show-finance-transactions');
+    Route::get('finance-transactions/{financeTransaction}/edit', [FinanceTransactionController::class, 'edit'])->name('finance-transactions.edit')->middleware('permission:edit-finance-transactions');
+    Route::put('finance-transactions/{financeTransaction}', [FinanceTransactionController::class, 'update'])->name('finance-transactions.update')->middleware('permission:edit-finance-transactions');
+    Route::delete('finance-transactions/{financeTransaction}', [FinanceTransactionController::class, 'destroy'])->name('finance-transactions.destroy')->middleware('permission:delete-finance-transactions');
 });
 
 require __DIR__.'/auth.php';

@@ -20,7 +20,7 @@ class FinanceCategory extends Model
     {
         return [
             'parent' => 'finance',
-            'table' => 'finance_categories',
+            'table' => 'finance-categories',
             'title' => 'Finance Category',
             'table_has_actions' => true,
             'table_has_timestamps' => true,

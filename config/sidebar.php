@@ -109,4 +109,27 @@ return [
             ],
         ],
     ],
+    [
+        'title' => 'Finance Management',
+        'icon' => 'fas-money-bill',
+        'active' => ['finance-categories*', 'finance-transactions*'],
+        'permission' => ['view-finance-categories'],
+        'children' => [
+            [
+                'title' => 'Finance Categories',
+                'icon' => 'fas-building',
+                'route' => 'finance-categories.index',
+                'active' => 'finance-categories*',
+                'permission' => 'view-finance-categories',
+            ],
+            [
+                'title' => 'Finance Transaction',
+                'icon' => 'fas-money-bill',
+                'route' => 'finance-transactions.index',
+                'active' => 'finance-transactions*',
+                'permission' => 'view-finance-transactions',
+            ],
+        ],
+    ],
+    
 ];

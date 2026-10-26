@@ -33,6 +33,7 @@ class TemplateStudController extends Controller
             $templateStuds = TemplateStud::query();
             
             return DataTables::of($templateStuds)
+                ->addIndexColumn()
                 ->addColumn('foreign_id', function ($templateStud) {
                     return $templateStud->foreign ? $templateStud->foreign->name : '';
                 })
