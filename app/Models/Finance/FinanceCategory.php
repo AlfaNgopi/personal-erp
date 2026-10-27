@@ -2,6 +2,7 @@
 
 namespace App\Models\Finance;
 
+use App\Models\WorkSpace;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
@@ -29,7 +30,20 @@ class FinanceCategory extends Model
             'table_has_timestamps' => true,
 
             'columns' => [
-
+                [
+                    'name' => 'work_space_id',
+                    'data' => 'work_space.name',
+                    'display_value' => 'work_spaces.name',
+                    'type' => 'select',
+                    'validation' => 'nullable|exists:work_spaces,id',
+                    'label' => 'Work Space',
+                    'options' => WorkSpace::all()->pluck('name', 'id')->toArray(),
+                    'required' => false,
+                    'inTable' => false,
+                    'inCreateForm' => false,
+                    'inEditForm' => false,
+                    'inShowPage' => true,
+                ],
                 [
                     'name' => 'name',
                     'data' => 'name',
@@ -97,7 +111,7 @@ class FinanceCategory extends Model
         static::addGlobalScope('workspace', function (Builder $builder) {
             // Pastikan user sudah login dan memiliki workspace yang aktif
             if (auth()->check() && session()->has('active_workspace_id')) {
-                $builder->where('work_space_id', session('active_workspace_id'));
+                $builder->where('finance_categories.work_space_id', session('active_workspace_id'));
             }
         });
     }

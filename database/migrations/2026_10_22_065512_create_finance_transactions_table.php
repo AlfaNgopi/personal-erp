@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('work_space_id')->constrained('work_spaces')->onDelete('cascade');
             $table->foreignId('finance_merchant_id')->constrained('finance_merchants');
             $table->foreignId('finance_category_id')->nullable()->constrained('finance_categories');
+            $table->string('transactionid');
             $table->integer('amount');
             $table->date('transaction_date');
             $table->text('description')->nullable();

@@ -66,6 +66,7 @@ return [
             'finance-categories*',
             'finance-transactions*',
             'finance-merchants*',
+            'finance.dashboard*'
         ],
         'permission' => [
             'view-finance-categories',
@@ -73,6 +74,13 @@ return [
             'view-finance-transactions',
         ],
         'children' => [
+            [
+                'title' => 'Dashboard',
+                'icon' => 'fas-tachometer-alt',
+                'route' => 'finance.dashboard',
+                'active' => 'finance.dashboard*',
+                'permission' => 'view-finance-transactions',
+            ],
             [
                 'title' => 'Finance Categories',
                 'icon' => 'fas-building',

@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Models\Finance;
+
 use App\Models\WorkSpace;
 use App\Models\Finance\FinanceCategory;
+use App\Models\Finance\FinanceMerchant;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,11 +19,12 @@ class FinanceTransaction extends Model
         'work_space_id',
         'finance_merchant_id',
         'finance_category_id',
+        'transactionid', // not foreign key
         'amount',
         'transaction_date',
         'description'
     ];
-    
+
     protected $dates = [
         'transaction_date',
         'deleted_at'
@@ -41,20 +44,21 @@ class FinanceTransaction extends Model
                 [
                     'name' => 'work_space_id',
                     'data' => 'work_space.name',
-                    'display_value' => 'work_spaces.name',
+                    'display_value' => 'work_space.name',
                     'type' => 'select',
                     'validation' => 'required|exists:work_spaces,id',
                     'label' => 'Work Space',
-                    'required' => true,
-                    'inTable' => true,
-                    'inCreateForm' => true,
-                    'inEditForm' => true,
+                    'options' => WorkSpace::all()->pluck('name', 'id')->toArray(),
+                    'required' => false,
+                    'inTable' => false,
+                    'inCreateForm' => false,
+                    'inEditForm' => false,
                     'inShowPage' => true,
                 ],
                 [
                     'name' => 'finance_merchant_id',
                     'data' => 'finance_merchant.name',
-                    'display_value' => 'finance_merchants.name',
+                    'display_value' => 'finance_merchant.name',
                     'type' => 'select',
                     'validation' => 'required|exists:finance_merchants,id',
                     'label' => 'Merchant',
@@ -65,7 +69,7 @@ class FinanceTransaction extends Model
                     'inEditForm' => true,
                     'inShowPage' => true,
                 ],
-                
+
                 [
                     'name' => 'transaction_date',
                     'data' => 'transaction_date',
@@ -95,7 +99,7 @@ class FinanceTransaction extends Model
                 [
                     'name' => 'finance_category_id',
                     'data' => 'finance_category.name',
-                    'display_value' => 'finance_categories.name',
+                    'display_value' => 'finance_category.name',
                     'type' => 'select',
                     'validation' => 'required|exists:finance_categories,id',
                     'label' => 'Finance Category',
@@ -129,7 +133,7 @@ class FinanceTransaction extends Model
         static::addGlobalScope('workspace', function (Builder $builder) {
             // Pastikan user sudah login dan memiliki workspace yang aktif
             if (auth()->check() && session()->has('active_workspace_id')) {
-                $builder->where('work_space_id', session('active_workspace_id'));
+                $builder->where('finance_transactions.work_space_id', session('active_workspace_id'));
             }
         });
     }

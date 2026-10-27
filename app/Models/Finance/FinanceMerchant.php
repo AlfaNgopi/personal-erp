@@ -33,13 +33,13 @@ class FinanceMerchant extends Model
                     'data' => 'work_space.name',
                     'display_value' => 'work_spaces.name',
                     'type' => 'select',
-                    'validation' => 'required|exists:work_spaces,id',
+                    'validation' => 'nullable|exists:work_spaces,id',
                     'label' => 'Work Space',
                     'options' => WorkSpace::all()->pluck('name', 'id')->toArray(),
-                    'required' => true,
-                    'inTable' => true,
-                    'inCreateForm' => true,
-                    'inEditForm' => true,
+                    'required' => false,
+                    'inTable' => false,
+                    'inCreateForm' => false,
+                    'inEditForm' => false,
                     'inShowPage' => true,
                 ],
                 [
@@ -80,7 +80,7 @@ class FinanceMerchant extends Model
         static::addGlobalScope('workspace', function (Builder $builder) {
             // Pastikan user sudah login dan memiliki workspace yang aktif
             if (auth()->check() && session()->has('active_workspace_id')) {
-                $builder->where('work_space_id', session('active_workspace_id'));
+                $builder->where('finance_merchants.work_space_id', session('active_workspace_id'));
             }
         });
     }

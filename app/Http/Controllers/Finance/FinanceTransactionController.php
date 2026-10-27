@@ -24,6 +24,7 @@ class FinanceTransactionController extends Controller
     public function index()
     {
         $structure = (new FinanceTransaction())->structure();
+        // return view('financetransaction.dashboard', $structure);
         return view('financetransaction.index', $structure);
     }
 
@@ -31,10 +32,12 @@ class FinanceTransactionController extends Controller
     {
         if (request()->ajax()) {
 
-            $financeTrasaction = FinanceTransaction::with('finance_merchant', 'finance_category', 'work_space');
+            $financeTrasaction = FinanceTransaction::with('finance_merchant', 'finance_category', 'work_space')
+            ->select('finance_transactions.*');
 
             return DataTables::of($financeTrasaction)
                 ->addIndexColumn()
+                
 
                 ->addColumn('actions', function ($financeTrasaction) {
                     $actions = '';
@@ -191,6 +194,7 @@ class FinanceTransactionController extends Controller
                 'work_space_id' => $currentWorkspaceId,
                 'finance_merchant_id' => $merchant->id,
                 'finance_category_id' => $merchant->defaultCategory?->id,
+                'transactionid' => $t['id_transaksi'],
                 'amount' => $t['jumlah'],
                 'transaction_date' => Carbon::createFromFormat('d/m/Y', $t['tanggal']),
                 'description' => $t['metode']
@@ -219,6 +223,10 @@ class FinanceTransactionController extends Controller
         $validatedData = $request->validate([
             ...$this->model->getValidationRules()
         ]);
+
+        $currentWorkspaceId = session('active_workspace_id');
+
+        $validatedData['work_space_id'] = $currentWorkspaceId;
 
         $financeTransaction = FinanceTransaction::create($validatedData);
 

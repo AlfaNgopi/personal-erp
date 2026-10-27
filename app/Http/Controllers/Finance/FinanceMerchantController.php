@@ -83,6 +83,10 @@ class FinanceMerchantController extends Controller
             ...$this->model->getValidationRules()
         ]);
 
+        $currentWorkspaceId = session('active_workspace_id');
+
+        $validatedData['work_space_id'] = $currentWorkspaceId;
+
         $financeMerchant = FinanceMerchant::create($validatedData);
 
         return redirect()->route('finance-merchants.index')->with('success', 'Merchant created successfully.');
@@ -118,13 +122,14 @@ class FinanceMerchantController extends Controller
 
         $financeMerchant->update($validatedData);
 
+        // dd($request->all());
 
         $validateApply = $request->validate([
-            'apply' => 'nullable|boolean'
+            'apply' => 'nullable|in:"on","off"'
         ]);
 
         // apply category transaksi dengan category merchant yang barusan diupdate
-        if ($request->apply == 1) {
+        if ($request->apply == "on") {
             FinanceTransaction::where('finance_merchant_id', $financeMerchant->id)->update(['finance_category_id' => $financeMerchant->default_category_id]);
         }
 

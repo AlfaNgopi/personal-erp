@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Finance\FinanceCategoryController;
+use App\Http\Controllers\Finance\FinanceDashboardController;
 use App\Http\Controllers\Finance\FinanceMerchantController;
 use App\Http\Controllers\Finance\FinanceTransactionController;
 use App\Http\Controllers\PermissionController;
@@ -87,6 +88,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('work-space-members/{workSpaceMember}', [WorkSpaceMembersController::class, 'destroy'])->name('work-space-members.destroy')->middleware('permission:delete-work-space-members');
 
     // Finance Management
+    Route::get('finance-transactions/dashboard', [FinanceDashboardController::class, 'index'])->name('finance.dashboard')->middleware('permission:view-finance-transactions');
+
     Route::get('finance-categories', [FinanceCategoryController::class, 'index'])->name('finance-categories.index')->middleware('permission:view-finance-categories');
     Route::get('finance-categories/table', [FinanceCategoryController::class, 'indexTable'])->name('finance-categories.indexTable')->middleware('permission:view-finance-categories');
     Route::get('finance-categories/export', [FinanceCategoryController::class, 'export'])->name('finance-categories.export')->middleware('permission:download-finance-categories');
