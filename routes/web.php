@@ -24,6 +24,8 @@ Route::view('dashboard', 'dashboard')
 Route::middleware(['auth'])->group(function () {
     Route::get('api-token', [UserController::class, 'getApiToken'])->name('api-token');
 
+    Route::get('switch-workspace/{workspaceId}', [WorkSpacesController::class, 'switchWorkspace'])->name('switch-workspace');
+
     Route::get('settings/profile', [Settings\ProfileController::class, 'edit'])->name('settings.profile.edit');
     Route::put('settings/profile', [Settings\ProfileController::class, 'update'])->name('settings.profile.update');
     Route::delete('settings/profile', [Settings\ProfileController::class, 'destroy'])->name('settings.profile.destroy');

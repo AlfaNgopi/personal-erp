@@ -39,16 +39,16 @@ class FinanceCategoryController extends Controller
                 ->addColumn('actions', function ($fc) {
                     $actions = '';
                     
-                    if (auth()->user()->hasPermission('show-template-studs')) {
-                        $actions .= '<a href="' . route('template-studs.show', $fc) . '" class="text-green-600 dark:text-green-400 hover:underline mr-3">View</a>';
+                    if (auth()->user()->hasPermission('show-finance-categories')) {
+                        $actions .= '<a href="' . route('finance-categories.show', $fc) . '" class="text-green-600 dark:text-green-400 hover:underline mr-3">View</a>';
                     }
                     
-                    if (auth()->user()->hasPermission('edit-template-studs')) {
-                        $actions .= '<a href="' . route('template-studs.edit', $fc) . '" class="text-blue-600 dark:text-blue-400 hover:underline mr-3">Edit</a>';
+                    if (auth()->user()->hasPermission('edit-finance-categories')) {
+                        $actions .= '<a href="' . route('finance-categories.edit', $fc) . '" class="text-blue-600 dark:text-blue-400 hover:underline mr-3">Edit</a>';
                     }
                     
-                    if (auth()->user()->hasPermission('delete-template-studs')) {
-                        $actions .= '<form action="' . route('template-studs.destroy', $fc) . '" method="POST" class="inline" onsubmit="return confirm(\'Are you sure?\')">
+                    if (auth()->user()->hasPermission('delete-finance-categories')) {
+                        $actions .= '<form action="' . route('finance-categories.destroy', $fc) . '" method="POST" class="inline" onsubmit="return confirm(\'Are you sure?\')">
                             ' . csrf_field() . method_field('DELETE') . '
                             <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Delete</button>
                         </form>';
@@ -83,6 +83,10 @@ class FinanceCategoryController extends Controller
         $validatedData = $request->validate([
             ...$this->model->getValidationRules()
         ]);
+
+        $currentWorkspaceId = session('active_workspace_id');
+
+        $validatedData['work_space_id'] = $currentWorkspaceId;
 
         $fc = FinanceCategory::create($validatedData);
 

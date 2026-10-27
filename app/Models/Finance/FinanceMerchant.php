@@ -3,6 +3,7 @@
 namespace App\Models\Finance;
 
 use App\Models\WorkSpace;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,6 +21,7 @@ class FinanceMerchant extends Model
     {
         return [
             'parent' => 'finance',
+            'routing' => 'finance-merchants',
             'table' => 'finance-merchants',
             'title' => 'Finance Merchant',
             'table_has_actions' => true,
@@ -30,7 +32,7 @@ class FinanceMerchant extends Model
                     'name' => 'work_space_id',
                     'data' => 'work_space.name',
                     'display_value' => 'work_spaces.name',
-                    'type' => 'string',
+                    'type' => 'select',
                     'validation' => 'required|exists:work_spaces,id',
                     'label' => 'Work Space',
                     'options' => WorkSpace::all()->pluck('name', 'id')->toArray(),
@@ -72,7 +74,31 @@ class FinanceMerchant extends Model
         ];
     }
 
+    protected static function booted()
+    {
+        // Otomatis tambahkan filter work_space_id setiap kali model dipanggil
+        static::addGlobalScope('workspace', function (Builder $builder) {
+            // Pastikan user sudah login dan memiliki workspace yang aktif
+            if (auth()->check() && session()->has('active_workspace_id')) {
+                $builder->where('work_space_id', session('active_workspace_id'));
+            }
+        });
+    }
+
+    public function workSpace()
+    {
+        return $this->belongsTo(WorkSpace::class, 'work_space_id');
+    }
+    public function work_space()
+    {
+        return $this->belongsTo(WorkSpace::class, 'work_space_id');
+    }
+
     public function defaultCategory()
+    {
+        return $this->belongsTo(FinanceCategory::class, 'default_category_id');
+    }
+    public function default_category()
     {
         return $this->belongsTo(FinanceCategory::class, 'default_category_id');
     }

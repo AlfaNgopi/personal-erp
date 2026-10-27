@@ -14,7 +14,7 @@ class WorkSpacesController extends Controller
     {
         $this->model = new WorkSpace();
     }
-    
+
     public function index()
     {
         $structure = $this->model->structure();
@@ -27,7 +27,7 @@ class WorkSpacesController extends Controller
         if (request()->ajax()) {
 
             $vendors = WorkSpace::select('work_spaces.*');
-            
+
             return DataTables::of($vendors)
                 ->addIndexColumn()
                 ->addColumn('foreign_id', function ($workSpace) {
@@ -35,22 +35,22 @@ class WorkSpacesController extends Controller
                 })
                 ->addColumn('actions', function ($workSpace) {
                     $actions = '';
-                    
+
                     if (auth()->user()->hasPermission('show-work-spaces')) {
                         $actions .= '<a href="' . route('work-spaces.show', $workSpace) . '" class="text-green-600 dark:text-green-400 hover:underline mr-3">View</a>';
                     }
-                    
+
                     if (auth()->user()->hasPermission('edit-work-spaces')) {
                         $actions .= '<a href="' . route('work-spaces.edit', $workSpace) . '" class="text-blue-600 dark:text-blue-400 hover:underline mr-3">Edit</a>';
                     }
-                    
+
                     if (auth()->user()->hasPermission('delete-work-spaces')) {
                         $actions .= '<form action="' . route('work-spaces.destroy', $workSpace) . '" method="POST" class="inline" onsubmit="return confirm(\'Are you sure?\')">
                             ' . csrf_field() . method_field('DELETE') . '
                             <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Delete</button>
                         </form>';
                     }
-                    
+
                     return $actions;
                 })
                 ->editColumn('created_at', function ($workSpace) {
@@ -61,11 +61,27 @@ class WorkSpacesController extends Controller
         }
     }
 
+    public function switchWorkspace(Request $request, $workspaceId)
+    {
+        $user = auth()->user();
+
+        $hasAccess = $user->workSpaces()->where('work_spaces.id', $workspaceId)->exists();
+
+        if (!$hasAccess) {
+            abort(403, 'Unauthorized access to this workspace.');
+        }
+
+        // Update session active_workspace_id dengan yang baru
+        session(['active_workspace_id' => $workspaceId]);
+
+        return redirect()->back()->with('success', 'Workspace berhasil diubah.');
+    }
+
     public function show(WorkSpace $workSpace)
     {
         $structure = $workSpace->structure();
         $data = $workSpace;
-        
+
         return view('dynamiccrud.show', array_merge($structure, ['data' => $data]));
     }
 

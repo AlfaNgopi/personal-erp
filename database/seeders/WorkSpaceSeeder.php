@@ -24,7 +24,8 @@ class WorkSpaceSeeder extends Seeder
         ];
 
         foreach ($data as $item) {
-            WorkSpace::create($item);
+            $ws = WorkSpace::create($item);
+            
         }
     }
 }

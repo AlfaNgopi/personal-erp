@@ -15,6 +15,134 @@
 
         <!-- Right side: Theme toggle, Search, notifications, profile -->
         <div class="flex items-center space-x-4">
+
+            <!-- Workspace Switcher -->
+            @php
+            $user = auth()->user();
+
+            // Sesuaikan relasi workspaces() dengan model User kamu.
+            $workspaces = $user->workspaces()->orderBy('name')->get();
+
+            
+
+            $currentWorkspaceId = session('active_workspace_id');
+
+            $currentWorkspace = app(\App\Models\WorkSpace::class)->find($currentWorkspaceId);
+            @endphp
+
+            <div x-data="{ open: false }" class="relative">
+                <button
+                    type="button"
+                    @click="open = !open"
+                    @keydown.escape.window="open = false"
+                    class="flex items-center gap-2 rounded-lg border border-gray-200
+               bg-white px-3 py-2 text-sm shadow-sm transition
+               hover:bg-gray-50 focus:outline-none
+               dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+                    :aria-expanded="open.toString()"
+                    aria-haspopup="true">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-lg
+                     bg-blue-100 text-blue-700 dark:bg-blue-900
+                     dark:text-blue-300">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4
+                         M9 9v.01M9 12v.01M9 15v.01M9 18v.01" />
+                        </svg>
+                    </span>
+
+                    <span class="hidden max-w-32 text-left sm:block">
+                        <span class="block text-xs text-gray-500 dark:text-gray-400">
+                            Workspace
+                        </span>
+                        <span class="block truncate font-medium text-gray-800 dark:text-gray-100">
+                            {{ $currentWorkspace?->name ?? 'Pilih workspace' }}
+                        </span>
+                    </span>
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 text-gray-500 transition-transform"
+                        :class="{ 'rotate-180': open }"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <div
+                    x-cloak
+                    x-show="open"
+                    @click.outside="open = false"
+                    x-transition
+                    class="absolute right-0 z-50 mt-2 w-64 overflow-hidden
+               rounded-xl border border-gray-200 bg-white shadow-lg
+               dark:border-gray-700 dark:bg-gray-800">
+                    <div class="border-b border-gray-100 px-4 py-3
+                    dark:border-gray-700">
+                        <p class="text-xs font-medium uppercase tracking-wide
+                      text-gray-500 dark:text-gray-400">
+                            Workspace kamu
+                        </p>
+                    </div>
+
+                    <div class="max-h-72 overflow-y-auto p-2">
+                        @forelse ($workspaces as $workspace)
+                        <a
+                            href="{{ route('switch-workspace', $workspace->id) }}"
+                            @click="open = false"
+                            class="flex items-center gap-3 rounded-lg px-3 py-2
+                           transition hover:bg-gray-100
+                           dark:hover:bg-gray-700
+                           {{ $currentWorkspace?->is($workspace)
+                                ? 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300'
+                                : 'text-gray-700 dark:text-gray-200' }}">
+                            <span class="flex h-9 w-9 shrink-0 items-center
+                                 justify-center rounded-lg bg-gray-100
+                                 text-gray-600 dark:bg-gray-700
+                                 dark:text-gray-300">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-5 w-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" />
+                                </svg>
+                            </span>
+
+                            <span class="min-w-0 flex-1">
+                                <span class="block truncate text-sm font-medium">
+                                    {{ $workspace->name }}
+                                </span>
+                                <span class="block truncate text-xs text-gray-500
+                                     dark:text-gray-400">
+                                    {{ $workspace->slug }}
+                                </span>
+                            </span>
+
+                            @if ($currentWorkspace?->is($workspace))
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="h-5 w-5 shrink-0" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            @endif
+                        </a>
+                        @empty
+                        <p class="px-3 py-4 text-sm text-gray-500
+                          dark:text-gray-400">
+                            Belum ada workspace.
+                        </p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
             <!-- Theme Toggle -->
             <div x-data="{ open: false }" class="relative">
                 <button @click="open = !open"
@@ -77,7 +205,7 @@
                         if (typeof window.setAppearance === 'function') {
                             window.setAppearance(theme);
                         }
-                        
+
                         // Set and submit form for persistence
                         const form = document.getElementById('header-appearance-form');
                         const input = document.getElementById('header_theme_preference');

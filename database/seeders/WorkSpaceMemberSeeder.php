@@ -15,7 +15,7 @@ class WorkSpaceMemberSeeder extends Seeder
     {
         $data = [
             [
-                'work_space_id' => 1, 
+                'work_space_id' => 5, 
                 'user_id' => 1,
                 'role' => 'owner',
                 'status' => 'active'

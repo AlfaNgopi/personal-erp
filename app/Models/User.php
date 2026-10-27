@@ -50,6 +50,21 @@ class User extends Authenticatable
         ];
     }
 
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            // Otomatis create workspace for user "Personal"
+            $ws = Workspace::create([
+                'name' => 'Personal',
+                'base_currency' => 'IDR',
+                'timezone' => 'Asia/Jakarta',
+                'status' => 'active',
+            ]);
+            $user->workSpaces()->attach($ws, ['role' => 'owner']);
+
+        });
+    }
+
     /**
      * Get the user's initials
      */
@@ -57,7 +72,7 @@ class User extends Authenticatable
     {
         return Str::of($this->name)
             ->explode(' ')
-            ->map(fn (string $name) => Str::of($name)->substr(0, 1))
+            ->map(fn(string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
 
@@ -94,5 +109,17 @@ class User extends Authenticatable
         }
 
         $this->roles()->detach($role->id);
+    }
+
+
+    public function workSpaces(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Workspace::class,
+            'work_space_members',
+            'user_id',
+            'work_space_id'
+        )->withPivot('role')
+            ->withTimestamps();
     }
 }

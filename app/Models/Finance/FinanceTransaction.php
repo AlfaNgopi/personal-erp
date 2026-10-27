@@ -3,7 +3,7 @@
 namespace App\Models\Finance;
 use App\Models\WorkSpace;
 use App\Models\Finance\FinanceCategory;
-
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -31,6 +31,7 @@ class FinanceTransaction extends Model
     {
         return [
             'parent' => 'finance',
+            'routing' => 'finance-transactions',
             'table' => 'finance-transactions',
             'title' => 'Finance Transaction',
             'table_has_actions' => true,
@@ -120,6 +121,17 @@ class FinanceTransaction extends Model
                 ],
             ]
         ];
+    }
+
+    protected static function booted()
+    {
+        // Otomatis tambahkan filter work_space_id setiap kali model dipanggil
+        static::addGlobalScope('workspace', function (Builder $builder) {
+            // Pastikan user sudah login dan memiliki workspace yang aktif
+            if (auth()->check() && session()->has('active_workspace_id')) {
+                $builder->where('work_space_id', session('active_workspace_id'));
+            }
+        });
     }
 
     public function workspace()

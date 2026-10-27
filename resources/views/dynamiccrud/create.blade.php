@@ -107,6 +107,14 @@
                 </div>
                 @break
 
+                @case('enum')
+                <div class="mb-4">
+                    <x-forms.select :label="$label" :name="$name"
+                        :options="$column['options'] ?? []"
+                        :value="old($name)" :required="$required" />
+                </div>
+                @break
+
                 @case('file')
                 @case('image')
                 <div class="mb-4">

@@ -40,6 +40,15 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
+        $user = Auth::user();
+
+        $defaultWorkspace = $user->workSpaces()->first(); 
+        
+
+        if ($defaultWorkspace) {
+            session(['active_workspace_id' => $defaultWorkspace->id]);
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

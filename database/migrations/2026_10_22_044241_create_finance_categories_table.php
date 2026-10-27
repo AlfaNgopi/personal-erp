@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('work_space_id')->constrained('work_spaces')->onDelete('cascade');
             $table->string('name');
-            $table->string('type'); // income or expense
-            $table->text('icon');
-            $table->string('color');
+            $table->enum('type', ['income', 'expense']); // income or expense
+            $table->text('icon')->nullable();
+            $table->string('color')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

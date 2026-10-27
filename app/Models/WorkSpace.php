@@ -3,11 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class WorkSpace extends Model
 {
     use SoftDeletes;
+
+    protected static function booted(): void
+    {
+        
+    }
+
     protected $table = 'work_spaces';
     protected $fillable = [
         'name',
@@ -78,10 +86,24 @@ class WorkSpace extends Model
                     'inEditForm' => true,
                     'inShowPage' => true,
                 ],
-                
+                [
+                    'name' => 'slug',
+                    'data' => 'slug',
+                    'display_value' => 'slug',
+                    'type' => 'string',
+                    'validation' => 'required|string|max:255',
+                    'label' => 'Slug',
+                    'required' => true,
+                    'inTable' => true,
+                    'inCreateForm' => true,
+                    'inEditForm' => true,
+                    'inShowPage' => true,
+                ]
             ]
         ];
     }
+
+
 
     public function getValidationRules(): array
     {
@@ -101,5 +123,17 @@ class WorkSpace extends Model
     public function members()
     {
         return $this->hasMany(WorkSpaceMember::class);
+    }
+
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'work_space_members',
+            'work_space_id',
+            'user_id'
+        )->withPivot('role')
+            ->withTimestamps();
     }
 }

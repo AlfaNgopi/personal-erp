@@ -38,56 +38,6 @@ return [
         ],
     ],
     [
-        'title' => 'Toko Management',
-        'icon' => 'fas-store',
-        'route' => 'tokos.index',
-        'active' => 'tokos*',
-        'permission' => 'view-tokos',
-    ],
-    [
-        'title' => 'Kasir',
-        'icon' => 'fas-cash-register',
-        'route' => 'kasir.dashboard',
-        'active' => 'kasir*',
-        'permission' => 'kasir',
-    ],
-    [
-        'title' => 'Penjualan Management',
-        'icon' => 'fas-chart-line',
-        'route' => 'penjualans.index',
-        'active' => 'penjualans*',
-        'permission' => 'view-penjualans',
-    ],
-    [
-        'title' => 'Produk Management',
-        'icon' => 'fas-boxes-stacked',
-        'active' => ['produks*', 'kategories*', 'satuans*'],
-        'permission' => ['view-produks', 'view-kategories', 'view-satuans'],
-        'children' => [
-            [
-                'title' => 'Produk',
-                'icon' => 'fas-box',
-                'route' => 'produks.index',
-                'active' => 'produks*',
-                'permission' => 'view-produks',
-            ],
-            [
-                'title' => 'Kategori',
-                'icon' => 'fas-tags',
-                'route' => 'kategories.index',
-                'active' => 'kategories*',
-                'permission' => 'view-kategories',
-            ],
-            [
-                'title' => 'Satuan',
-                'icon' => 'fas-scale-balanced',
-                'route' => 'satuans.index',
-                'active' => 'satuans*',
-                'permission' => 'view-satuans',
-            ],
-        ],
-    ],
-    [
         'title' => 'Work Spaces Management',
         'icon' => 'fas-building',
         'active' => ['work-spaces*', 'work-space-members*'],
@@ -112,8 +62,16 @@ return [
     [
         'title' => 'Finance Management',
         'icon' => 'fas-money-bill',
-        'active' => ['finance-categories*', 'finance-transactions*'],
-        'permission' => ['view-finance-categories'],
+        'active' => [
+            'finance-categories*',
+            'finance-transactions*',
+            'finance-merchants*',
+        ],
+        'permission' => [
+            'view-finance-categories',
+            'view-finance-merchants',
+            'view-finance-transactions',
+        ],
         'children' => [
             [
                 'title' => 'Finance Categories',
@@ -138,5 +96,5 @@ return [
             ],
         ],
     ],
-    
+
 ];

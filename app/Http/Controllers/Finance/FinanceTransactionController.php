@@ -66,6 +66,7 @@ class FinanceTransactionController extends Controller
 
     public function importPdf(Request $request)
     {
+        $currentWorkspaceId = session('active_workspace_id');
 
 
         $path = $request->file('pdf')->getRealPath();
@@ -177,17 +178,17 @@ class FinanceTransactionController extends Controller
 
 
             // tentukan merchant berdasarkan nama
-            $merchant = FinanceMerchant::where('work_space_id', 1)
+            $merchant = FinanceMerchant::where('work_space_id', $currentWorkspaceId)
             ->where('name', $t['nama'])->first();
 
             // jika merchant tidak ada, buat baru
             if (!$merchant) {
-                $merchant = FinanceMerchant::create(['name' => $t['nama'], 'work_space_id' => 1]);
+                $merchant = FinanceMerchant::create(['name' => $t['nama'], 'work_space_id' => $currentWorkspaceId]);
             }
 
             // simpan transaksi dengan merchant
             FinanceTransaction::create([
-                'work_space_id' => 1, //temp
+                'work_space_id' => $currentWorkspaceId,
                 'finance_merchant_id' => $merchant->id,
                 'finance_category_id' => $merchant->defaultCategory?->id,
                 'amount' => $t['jumlah'],

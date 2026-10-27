@@ -61,8 +61,14 @@ class UserController extends Controller
 
     public function getApiToken(Request $request): JsonResponse
     {
+
+
         $user = $request->user();
         $token = $user->createToken('api-token')->plainTextToken;
+
+        $workspaces = $user->workSpaces;
+
+        dd($workspaces);
 
         return response()->json([
             'status' => 'success',
