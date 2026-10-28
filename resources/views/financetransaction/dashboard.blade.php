@@ -217,34 +217,16 @@
                 </div>
 
                 <div class="mt-5 space-y-3">
+                    @foreach ($expenseCategories as $category)
                     <div class="flex items-center justify-between text-sm">
                         <span class="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-                            {{ __('Operations') }}
+                            <span class="w-2.5 h-2.5 rounded-full" style="background-color: '{{ $category->color }}'"></span>
+                            {{ $category->name }}
                         </span>
-                        <span class="font-medium text-gray-800 dark:text-gray-100">35%</span>
+                        <span class="font-medium text-gray-800 dark:text-gray-100">{{ abs($category->total) }}</span>
                     </div>
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                            <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span>
-                            {{ __('Salaries') }}
-                        </span>
-                        <span class="font-medium text-gray-800 dark:text-gray-100">30%</span>
-                    </div>
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                            <span class="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
-                            {{ __('Marketing') }}
-                        </span>
-                        <span class="font-medium text-gray-800 dark:text-gray-100">20%</span>
-                    </div>
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                            <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-                            {{ __('Other') }}
-                        </span>
-                        <span class="font-medium text-gray-800 dark:text-gray-100">15%</span>
-                    </div>
+                    @endforeach
+                    
                 </div>
             </div>
         </div>
@@ -285,6 +267,7 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
 
+                            @foreach($recentTransactions as $transaction)
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
@@ -300,19 +283,19 @@
                                         </div>
                                         <div>
                                             <p class="font-medium text-gray-800 dark:text-gray-100">
-                                                {{ __('Client Payment') }}
+                                                {{ $transaction->merchant_name }}
                                             </p>
                                             <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                INV-2026-001
+                                                {{ $transaction->transactionid }}
                                             </p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
-                                    25 Oct 2026
+                                    {{ $transaction->transaction_date }}
                                 </td>
                                 <td class="px-6 py-4 font-medium text-green-600 whitespace-nowrap">
-                                    +Rp 15.000.000
+                                    Rp {{ number_format($transaction->amount, 0, ',', '.') }}
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="px-2.5 py-1 rounded-full text-xs
@@ -322,120 +305,9 @@
                                     </span>
                                 </td>
                             </tr>
+                            @endforeach
 
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full bg-red-100
-                                            dark:bg-red-900/40 flex items-center justify-center">
-                                            <svg class="w-5 h-5 text-red-600"
-                                                fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round"
-                                                    stroke-linejoin="round" stroke-width="2"
-                                                    d="M20 12H4" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-800 dark:text-gray-100">
-                                                {{ __('Office Rent') }}
-                                            </p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                EXP-2026-018
-                                            </p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
-                                    24 Oct 2026
-                                </td>
-                                <td class="px-6 py-4 font-medium text-red-500 whitespace-nowrap">
-                                    -Rp 8.000.000
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs
-                                        font-medium bg-green-100 text-green-700
-                                        dark:bg-green-900/40 dark:text-green-400">
-                                        {{ __('Completed') }}
-                                    </span>
-                                </td>
-                            </tr>
-
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full bg-blue-100
-                                            dark:bg-blue-900/40 flex items-center justify-center">
-                                            <svg class="w-5 h-5 text-blue-600"
-                                                fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round"
-                                                    stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 4v16m8-8H4" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-800 dark:text-gray-100">
-                                                {{ __('Project Revenue') }}
-                                            </p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                INV-2026-002
-                                            </p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
-                                    23 Oct 2026
-                                </td>
-                                <td class="px-6 py-4 font-medium text-green-600 whitespace-nowrap">
-                                    +Rp 12.500.000
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs
-                                        font-medium bg-yellow-100 text-yellow-700
-                                        dark:bg-yellow-900/40 dark:text-yellow-400">
-                                        {{ __('Pending') }}
-                                    </span>
-                                </td>
-                            </tr>
-
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full bg-red-100
-                                            dark:bg-red-900/40 flex items-center justify-center">
-                                            <svg class="w-5 h-5 text-red-600"
-                                                fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round"
-                                                    stroke-linejoin="round" stroke-width="2"
-                                                    d="M20 12H4" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-800 dark:text-gray-100">
-                                                {{ __('Employee Salaries') }}
-                                            </p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                EXP-2026-017
-                                            </p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
-                                    22 Oct 2026
-                                </td>
-                                <td class="px-6 py-4 font-medium text-red-500 whitespace-nowrap">
-                                    -Rp 25.000.000
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs
-                                        font-medium bg-green-100 text-green-700
-                                        dark:bg-green-900/40 dark:text-green-400">
-                                        {{ __('Completed') }}
-                                    </span>
-                                </td>
-                            </tr>
+                            
 
                         </tbody>
                     </table>
@@ -523,11 +395,11 @@
 
     <script>
         const financeLabels = JSON.parse(document.getElementById('monthLabels').value);
-        console.log(financeLabels);
+        // console.log(financeLabels);
         const financeIncome = JSON.parse(document.getElementById('chartIncome').value);
-        console.log(financeIncome);
+        // console.log(financeIncome);
         const financeExpenses = JSON.parse(document.getElementById('chartExpenses').value);
-        console.log(financeExpenses);
+        // console.log(financeExpenses);
     </script>
 
     <script>
@@ -535,8 +407,10 @@
         console.log(expenseCategories);
 
         const expenseCategoryLabels = expenseCategories.map(c => c.name);
+        console.log(expenseCategoryLabels);
 
         const expenseCategoryValues = expenseCategories.map(c => c.percentage);
+        console.log(expenseCategoryValues);
 
         const expenseCategoryColors = expenseCategories.map(c => c.color);
     </script>
@@ -653,9 +527,9 @@
                 expenseCanvas.chartInstance = new Chart(expenseCanvas, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Operations', 'Salaries', 'Marketing', 'Other'],
+                        labels: expenseCategoryLabels,
                         datasets: [{
-                            data: [35, 30, 20, 15],
+                            data: expenseCategoryValues,
                             backgroundColor: [
                                 '#3B82F6',
                                 '#22C55E',

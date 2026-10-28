@@ -198,20 +198,32 @@ class FinanceDashboardController extends Controller
                 'finance_categories.name',
                 'finance_categories.color'
             )
-            ->orderByDesc('total')
+            ->orderBy('total', 'asc')
             ->get();
 
-        $expenseTotalForChart = $expenseCategories->sum('total');
+        $otherExpenseCategories = FinanceTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+            ->whereNull('finance_category_id')
+            ->sum('amount');
 
-        $expenseCategories = $expenseCategories->map(function ($category) use (
-            $expenseTotalForChart
-        ) {
+        $expenseCategories->push((object)[
+            'id' => 0,
+            'name' => 'Other',
+            'color' => '#ccc',
+            'total' => $otherExpenseCategories
+        ]);
+
+        $expenseTotalForChart = abs($expenseCategories->sum('total'));
+        $expenseTotalForChart += abs($otherExpenseCategories);
+
+        $expenseCategories = $expenseCategories->map(function ($category) use ($expenseTotalForChart) {
             $category->percentage = $expenseTotalForChart > 0
-                ? round(($category->total / $expenseTotalForChart) * 100, 2)
+                ? round((abs($category->total) / $expenseTotalForChart) * 100, 2)
                 : 0;
 
             return $category;
         });
+
+        // dd($expenseCategories);
 
         /*
         |--------------------------------------------------------------------------
@@ -252,7 +264,7 @@ class FinanceDashboardController extends Controller
                 'finance_categories.type as category_type',
             ])
             ->orderByDesc('finance_transactions.transaction_date')
-            ->limit(10)
+            ->limit(5)
             ->get();
 
         /*
