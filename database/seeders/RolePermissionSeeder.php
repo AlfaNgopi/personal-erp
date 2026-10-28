@@ -67,7 +67,32 @@ class RolePermissionSeeder extends Seeder
             'create-finance-categories',
             'edit-finance-categories',
             'delete-finance-categories',
-            'download-finance-categories'
+            'download-finance-categories',
+
+            // calendar permissions
+            'view-calendar-events',
+            'show-calendar-events',
+            'create-calendar-events',
+            'edit-calendar-events',
+            'delete-calendar-events',
+            'download-calendar-events',
+
+            'view-calendar-review',
+            'show-calendar-review',
+            'create-calendar-review',
+            'edit-calendar-review',
+            'delete-calendar-review',
+            'download-calendar-review',
+
+            'view-calendar-tasks',
+            'show-calendar-tasks',
+            'create-calendar-tasks',
+            'edit-calendar-tasks',
+            'delete-calendar-tasks',
+            'download-calendar-tasks',
+
+            'view-calendar-dashboard',
+
         ];
 
         foreach ($permissions as $permissionName) {

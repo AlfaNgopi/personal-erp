@@ -105,4 +105,52 @@ return [
         ],
     ],
 
+    [
+        'title' => 'Calendar Management',
+        'icon' => 'fas-calendar',
+        'active' => [
+            'calendar-events*',
+            'calendar-reviews*',
+            'calendar-tasks*',
+            'calendar.dashboard*'
+        ],
+        'permission' => [
+            'view-calendar-events',
+            'view-calendar-review',
+            'view-calendar-tasks',
+            'view-calendar-dashboard'
+        ],
+        'children' => [
+            [
+                'title' => 'Dashboard',
+                'icon' => 'fas-tachometer-alt',
+                'route' => 'calendar.dashboard',
+                'active' => 'calendar.dashboard*',
+                'permission' => 'view-calendar-events',
+            ],
+            [
+                'title' => 'Calendar Events',
+                'icon' => 'fas-calendar',
+                'route' => 'calendar-events.index',
+                'active' => 'calendar-events*',
+                'permission' => 'view-calendar-events',
+            ],
+            [
+                'title' => 'Calendar Review',
+                'icon' => 'fas-eye',
+                'route' => 'calendar-reviews.index',
+                'active' => 'calendar-reviews*',
+                'permission' => 'view-calendar-review',
+            ],
+            [
+                'title' => 'Calendar Task',
+                'icon' => 'fas-tasks',
+                'route' => 'calendar-tasks.index',
+                'active' => 'calendar-tasks*',
+                'permission' => 'view-calendar-tasks',
+            ],
+        ],
+    ],
+
+
 ];

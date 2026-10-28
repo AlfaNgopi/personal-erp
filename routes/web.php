@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Calendar\CalendarEventController;
+use App\Http\Controllers\Calendar\CalendarReviewController;
+use App\Http\Controllers\Calendar\CalendarTaskController;
 use App\Http\Controllers\Finance\FinanceCategoryController;
 use App\Http\Controllers\Finance\FinanceDashboardController;
 use App\Http\Controllers\Finance\FinanceMerchantController;
@@ -120,6 +123,39 @@ Route::middleware(['auth'])->group(function () {
     Route::get('finance-transactions/{financeTransaction}/edit', [FinanceTransactionController::class, 'edit'])->name('finance-transactions.edit')->middleware('permission:edit-finance-transactions');
     Route::put('finance-transactions/{financeTransaction}', [FinanceTransactionController::class, 'update'])->name('finance-transactions.update')->middleware('permission:edit-finance-transactions');
     Route::delete('finance-transactions/{financeTransaction}', [FinanceTransactionController::class, 'destroy'])->name('finance-transactions.destroy')->middleware('permission:delete-finance-transactions');
+
+    //calendar routes
+    Route::get('calendar-dashboard', [CalendarReviewController::class, 'index'])->name('calendar.dashboard')->middleware('permission:view-calendar-dashboard');
+    
+    Route::get('calendar-events', [CalendarEventController::class, 'index'])->name('calendar-events.index')->middleware('permission:view-calendar-events');
+    Route::get('calendar-events/table', [CalendarEventController::class, 'indexTable'])->name('calendar-events.indexTable')->middleware('permission:view-calendar-events');
+    Route::get('calendar-events/export', [CalendarEventController::class, 'export'])->name('calendar-events.export')->middleware('permission:download-calendar-events');
+    Route::get('calendar-events/create', [CalendarEventController::class, 'create'])->name('calendar-events.create')->middleware('permission:create-calendar-events');
+    Route::post('calendar-events', [CalendarEventController::class, 'store'])->name('calendar-events.store')->middleware('permission:create-calendar-events');
+    Route::get('calendar-events/{calendarEvent}', [CalendarEventController::class, 'show'])->name('calendar-events.show')->middleware('permission:show-calendar-events');
+    Route::get('calendar-events/{calendarEvent}/edit', [CalendarEventController::class, 'edit'])->name('calendar-events.edit')->middleware('permission:edit-calendar-events');
+    Route::put('calendar-events/{calendarEvent}', [CalendarEventController::class, 'update'])->name('calendar-events.update')->middleware('permission:edit-calendar-events');
+    Route::delete('calendar-events/{calendarEvent}', [CalendarEventController::class, 'destroy'])->name('calendar-events.destroy')->middleware('permission:delete-calendar-events');
+
+    Route::get('calendar-reviews', [CalendarReviewController::class, 'index'])->name('calendar-reviews.index')->middleware('permission:view-calendar-review');
+    Route::get('calendar-reviews/table', [CalendarReviewController::class, 'indexTable'])->name('calendar-reviews.indexTable')->middleware('permission:view-calendar-review');
+    Route::get('calendar-reviews/export', [CalendarReviewController::class, 'export'])->name('calendar-reviews.export')->middleware('permission:download-calendar-review');
+    Route::get('calendar-reviews/create', [CalendarReviewController::class, 'create'])->name('calendar-reviews.create')->middleware('permission:create-calendar-review');
+    Route::post('calendar-reviews', [CalendarReviewController::class, 'store'])->name('calendar-reviews.store')->middleware('permission:create-calendar-review');
+    Route::get('calendar-reviews/{calendarReview}', [CalendarReviewController::class, 'show'])->name('calendar-reviews.show')->middleware('permission:show-calendar-review');
+    Route::get('calendar-reviews/{calendarReview}/edit', [CalendarReviewController::class, 'edit'])->name('calendar-reviews.edit')->middleware('permission:edit-calendar-review');
+    Route::put('calendar-reviews/{calendarReview}', [CalendarReviewController::class, 'update'])->name('calendar-reviews.update')->middleware('permission:edit-calendar-review');
+    Route::delete('calendar-reviews/{calendarReview}', [CalendarReviewController::class, 'destroy'])->name('calendar-reviews.destroy')->middleware('permission:delete-calendar-review');
+
+    Route::get('calendar-tasks', [CalendarTaskController::class, 'index'])->name('calendar-tasks.index')->middleware('permission:view-calendar-tasks');
+    Route::get('calendar-tasks/table', [CalendarTaskController::class, 'indexTable'])->name('calendar-tasks.indexTable')->middleware('permission:view-calendar-tasks');
+    Route::get('calendar-tasks/export', [CalendarTaskController::class, 'export'])->name('calendar-tasks.export')->middleware('permission:download-calendar-tasks');
+    Route::get('calendar-tasks/create', [CalendarTaskController::class, 'create'])->name('calendar-tasks.create')->middleware('permission:create-calendar-tasks');
+    Route::post('calendar-tasks', [CalendarTaskController::class, 'store'])->name('calendar-tasks.store')->middleware('permission:create-calendar-tasks');
+    Route::get('calendar-tasks/{calendarTask}', [CalendarTaskController::class, 'show'])->name('calendar-tasks.show')->middleware('permission:show-calendar-tasks');
+    Route::get('calendar-tasks/{calendarTask}/edit', [CalendarTaskController::class, 'edit'])->name('calendar-tasks.edit')->middleware('permission:edit-calendar-tasks');
+    Route::put('calendar-tasks/{calendarTask}', [CalendarTaskController::class, 'update'])->name('calendar-tasks.update')->middleware('permission:edit-calendar-tasks');
+    Route::delete('calendar-tasks/{calendarTask}', [CalendarTaskController::class, 'destroy'])->name('calendar-tasks.destroy')->middleware('permission:delete-calendar-tasks');
 });
 
 require __DIR__.'/auth.php';
