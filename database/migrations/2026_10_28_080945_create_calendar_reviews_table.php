@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('calendar_reviews', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('work_space_id')->constrained('work_spaces')->onDelete('cascade');
+            $table->date('review_date');
+            $table->integer('rating')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

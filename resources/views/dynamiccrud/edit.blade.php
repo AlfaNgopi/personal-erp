@@ -116,7 +116,7 @@
                 
                 @case('enum')
                 <div class="mb-4">
-                    <x-forms.select :label="$label" :name="$name"
+                    <x-forms.enum :label="$label" :name="$name"
                         :options="$column['options'] ?? []"
                         :value="$current" :required="$required" />
                 </div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Calendar\CalendarDashboardController;
 use App\Http\Controllers\Calendar\CalendarEventController;
 use App\Http\Controllers\Calendar\CalendarReviewController;
 use App\Http\Controllers\Calendar\CalendarTaskController;
@@ -125,7 +126,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('finance-transactions/{financeTransaction}', [FinanceTransactionController::class, 'destroy'])->name('finance-transactions.destroy')->middleware('permission:delete-finance-transactions');
 
     //calendar routes
-    Route::get('calendar-dashboard', [CalendarReviewController::class, 'index'])->name('calendar.dashboard')->middleware('permission:view-calendar-dashboard');
+    Route::get('calendar-dashboard', [CalendarDashboardController::class, 'index'])->name('calendar.dashboard')->middleware('permission:view-calendar-dashboard');
+    Route::get('/calendar-dashboard/data', [CalendarDashboardController::class,'data'])->name('calendar.data');
+    Route::get('/calendar-dashboard/day', [CalendarDashboardController::class,'day',])->name('calendar.day');
     
     Route::get('calendar-events', [CalendarEventController::class, 'index'])->name('calendar-events.index')->middleware('permission:view-calendar-events');
     Route::get('calendar-events/table', [CalendarEventController::class, 'indexTable'])->name('calendar-events.indexTable')->middleware('permission:view-calendar-events');

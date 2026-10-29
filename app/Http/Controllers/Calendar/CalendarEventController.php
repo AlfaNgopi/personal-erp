@@ -82,6 +82,10 @@ class CalendarEventController extends Controller
             ...$this->model->getValidationRules()
         ]);
 
+        $currentWorkspaceId = session('active_workspace_id');
+
+        $validatedData['work_space_id'] = $currentWorkspaceId;
+
         $calendarEvent = CalendarEvent::create($validatedData);
 
         return redirect()->route('calendar-events.index')->with('success', 'Calendar Event created successfully.');
@@ -99,6 +103,10 @@ class CalendarEventController extends Controller
         $validatedData = $request->validate([
             ...$this->model->getValidationRules()
         ]);
+
+        $currentWorkspaceId = session('active_workspace_id');
+
+        $validatedData['work_space_id'] = $currentWorkspaceId;
 
         $calendarEvent->update($validatedData);
 

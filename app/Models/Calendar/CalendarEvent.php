@@ -5,6 +5,8 @@ namespace App\Models\Calendar;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\WorkSpace;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class CalendarEvent extends Model
 {
@@ -61,7 +63,7 @@ class CalendarEvent extends Model
                     'data' => 'type',
                     'display_value' => 'type',
                     'type' => 'enum',
-                    'validation' => 'required|in:Productive,Entertainment,Other',
+                    'validation' => 'required|in:"Productive","Entertainment","Other"',
                     'label' => 'Type',
                     'options' => ['Productive', 'Entertainment', 'Other'],
                     'required' => true,
@@ -123,6 +125,17 @@ class CalendarEvent extends Model
     public function work_space()
     {
         return $this->belongsTo(WorkSpace::class);
+    }
+
+    protected static function booted()
+    {
+        // Otomatis tambahkan filter work_space_id setiap kali model dipanggil
+        static::addGlobalScope('workspace', function (Builder $builder) {
+            // Pastikan user sudah login dan memiliki workspace yang aktif
+            if (auth()->check() && session()->has('active_workspace_id')) {
+                $builder->where('calendar_events.work_space_id', session('active_workspace_id'));
+            }
+        });
     }
 
     public function getValidationRules(): array
